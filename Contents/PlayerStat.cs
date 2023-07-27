@@ -14,13 +14,15 @@ public class PlayerStat : Stat
     public int Exp { get { return _exp; } set { _exp = value; } }
     public int Gold { get { return _gold; } set { _gold = value; } }
 
-    private void Start()
+    public void Start()
     {
         _level = 1;
         _hp = 100;
         _maxhp = 100;
-        _attack = 10;
+        _attack = 20;
         _defense = 5;
+        _stamina = 100;
+        _maxstamina= 100;
         _exp = 0;
         _gold =0;
     }

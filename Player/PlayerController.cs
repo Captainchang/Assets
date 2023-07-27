@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     public Animation anim;
     public Animator animator;
 
+    
     [Header("이동")]
     [Space (10)]
     public float gravity = -9.18f;
@@ -54,6 +55,11 @@ public class PlayerController : MonoBehaviour
         animator.SetBool("PR", false);
         _state = Define.Player.Idle;
     }
+    void Stamina()
+    {
+        if (_player.Stamina <= _player.MaxStamina && _state != Define.Player.Run)
+            _player.Stamina += 7 * Time.deltaTime;
+    }
     private void FixedUpdate()
     {
         Jump();
@@ -63,14 +69,22 @@ public class PlayerController : MonoBehaviour
         Attack();
         //float x = Input.GetAxis("Horizontal");   // 수평 이동
         float z = Input.GetAxis("Vertical");
+        Stamina();
+        var ispuuch = animator.GetCurrentAnimatorStateInfo(0).IsName("PunchR");
 
-        if (z >= 0.1f && !(animator.GetCurrentAnimatorStateInfo(0).IsName("PunchR")))
+        if (z >= 0.1f && !(ispuuch))
         {
-           _state = Define.Player.Run;
+           _state = Define.Player.Walk;
            _player.MoveSpeed = 4f;
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftShift) && _player.Stamina >= 10)
             {
+                _state = Define.Player.Run;
                 _player.MoveSpeed = 7f;
+                _player.Stamina -= 20 * Time.deltaTime; 
+            }
+            else
+            {
+                _state = Define.Player.Idle;
             }
            animator.SetFloat("Speed", 5.0f);
         }

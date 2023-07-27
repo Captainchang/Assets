@@ -10,6 +10,7 @@ public class Define
     {
         None,
         Idle,
+        Walk,
         Run,
         Attack,
         Jump
@@ -39,5 +40,10 @@ public class Define
         None,
         Slime,
         Turtle,
+    }
+    public enum UI_GameObjects
+    {
+        Hpbar,
+        Staminabar,
     }
 }

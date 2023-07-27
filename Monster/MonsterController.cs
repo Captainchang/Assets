@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Headers;
+using Unity.VisualScripting;
 using UnityEngine;
+using static Define;
 
 public class MonsterController : MonoBehaviour
 {
@@ -11,6 +13,10 @@ public class MonsterController : MonoBehaviour
     Define.Monsteraction _action = Define.Monsteraction.Move;
     
     private PlayerController player;
+    [SerializeField]
+    PlayerStat playerStat;
+    [SerializeField]
+    Stat monsterstat;
     [SerializeField]
     private GameObject locktarget;
     public GameObject PlayerTrans;
@@ -25,12 +31,29 @@ public class MonsterController : MonoBehaviour
     private float movespeed = 3.0f;
    
     Vector3 startPosition;
+    void setStat()
+    {
+        if(_type == Define.MonsterType.Turtle)
+        {
+            monsterstat.HP = 60;
+            monsterstat.MaxHp = 60;
+            monsterstat.Attack = 3;
+        }
+
+        if(_type == Define.MonsterType.Turtle)
+        {
+            monsterstat.HP = 50;
+            monsterstat.MaxHp = 50;
+            monsterstat.Attack = 2;
+        }
+    }
     private void Awake()
     {
+        setStat();
         PlayerTrans = GameObject.FindWithTag("Player");
         startPosition = transform.position;
         _state = Define.Monster.Idle;
-
+       
     }
     void Start()
     {
@@ -44,6 +67,8 @@ public class MonsterController : MonoBehaviour
     }
     void UpdateIdle()
     {
+        var isidle = animator.GetCurrentAnimatorStateInfo(0).IsName("Idle");
+
         if (locktarget == null)
         {
             Invoke("Think", 5f);
@@ -70,9 +95,28 @@ public class MonsterController : MonoBehaviour
             }
         }
     }
+    void UpdateAttack()
+    {
+        this.transform.LookAt(locktarget.transform);
+        animator.SetBool("Attack", true);
+        
+    }
+    void Attack()
+    {
+        playerStat.HP -= monsterstat.Attack;
+        Debug.Log("공격! 플레이어 체력 " + playerStat.HP);
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+       if(locktarget != null)
+        {
+            Attack();
+        }
+    }
+
     void Update()
     {
-        
+
         float dis = Vector3.Distance(transform.position, PlayerTrans.transform.position);
 
         if (dis < 5)
@@ -81,11 +125,9 @@ public class MonsterController : MonoBehaviour
             locktarget = PlayerTrans;
             animator.SetBool("Attack", false);
         }
-        if (dis  <2)
+        if (dis <= 2)
         {
             _state = Define.Monster.Attack;
-            this.transform.LookAt(locktarget.transform);
-            animator.SetBool("Attack", true);
         }
         Debug.DrawRay(this.transform.position + Vector3.up, Vector3.forward * 10 , Color.red);
         RaycastHit hit;
@@ -106,7 +148,7 @@ public class MonsterController : MonoBehaviour
                 break;
 
             case Define.Monster.Attack:
-
+                UpdateAttack();
                 break;
         }
     }
