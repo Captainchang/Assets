@@ -2,17 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using static Define;
+using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerController : MonoBehaviour
 {
     Define.Player _state = Define.Player.Idle;
 
+    MonsterController monsterController;
     PlayerStat _player;
+    [SerializeField]
+    MonsterStat _monster;
     public CharacterController controller;
     public Animation anim;
     public Animator animator;
+    [SerializeField]
+    private GameObject locktarget;
+    [SerializeField]
+    LayerMask layer;
 
-    
     [Header("이동")]
     [Space (10)]
     public float gravity = -9.18f;
@@ -23,9 +31,11 @@ public class PlayerController : MonoBehaviour
     public Vector3 move;
     private void Start()
     {
+        monsterController=  GameObject.FindGameObjectWithTag("Monster").GetComponent<MonsterController>();
         anim = GetComponent<Animation>();
         animator = GetComponent<Animator>();
         _player = GetComponent<PlayerStat>();
+        _monster =GetComponent<MonsterStat>();
     }
     void Jump()
     {
@@ -42,7 +52,7 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Jump", false);
         }
     }
-    void Attack()
+    void OnPRanim()
     {
         if (Input.GetMouseButton(0))
         {
@@ -50,9 +60,22 @@ public class PlayerController : MonoBehaviour
             _state = Define.Player.Attack;
         }
     }
+    void Attack()
+    {
+        if (locktarget != null)
+        {
+            var dis = (locktarget.transform.position - gameObject.transform.position).magnitude;
+
+            if (dis <= 2 )
+            {
+                monsterController.hit();
+            }
+        }
+    }
     void OnPRanimFinish()
     {
         animator.SetBool("PR", false);
+        Attack();
         _state = Define.Player.Idle;
     }
     void Stamina()
@@ -66,7 +89,20 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
-        Attack();
+        var playerForward = transform.forward;
+        var rayDir = playerForward * 10f;
+        Debug.DrawRay(this.transform.position + Vector3.up, rayDir, Color.red);
+        RaycastHit hit;
+
+        if (Physics.Raycast(this.transform.position + Vector3.up, rayDir, out hit, 20.0f, layer))
+        {
+            locktarget = hit.transform.gameObject;  
+        }
+        else
+        {
+            locktarget = null;
+        }
+        OnPRanim();
         //float x = Input.GetAxis("Horizontal");   // 수평 이동
         float z = Input.GetAxis("Vertical");
         Stamina();

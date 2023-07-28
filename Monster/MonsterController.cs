@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Headers;
 using Unity.VisualScripting;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using static Define;
 
@@ -15,8 +16,8 @@ public class MonsterController : MonoBehaviour
     private PlayerController player;
     [SerializeField]
     PlayerStat playerStat;
-    [SerializeField]
-    Stat monsterstat;
+
+    MonsterStat monsterstat;
     [SerializeField]
     private GameObject locktarget;
     public GameObject PlayerTrans;
@@ -30,26 +31,10 @@ public class MonsterController : MonoBehaviour
     [SerializeField]
     private float movespeed = 3.0f;
    
-    Vector3 startPosition;
-    void setStat()
-    {
-        if(_type == Define.MonsterType.Turtle)
-        {
-            monsterstat.HP = 60;
-            monsterstat.MaxHp = 60;
-            monsterstat.Attack = 3;
-        }
+    public Vector3 startPosition;
 
-        if(_type == Define.MonsterType.Turtle)
-        {
-            monsterstat.HP = 50;
-            monsterstat.MaxHp = 50;
-            monsterstat.Attack = 2;
-        }
-    }
     private void Awake()
     {
-        setStat();
         PlayerTrans = GameObject.FindWithTag("Player");
         startPosition = transform.position;
         _state = Define.Monster.Idle;
@@ -57,21 +42,18 @@ public class MonsterController : MonoBehaviour
     }
     void Start()
     {
+        monsterstat = GetComponent<MonsterStat>();
         player = GetComponent<PlayerController>();
         animator =GetComponent<Animator>();
     }
-    void Think()
-    {
-        int nextmove = Random.Range(-5,6);
-        //Debug.Log(nextmove);
-    }
+
     void UpdateIdle()
     {
         var isidle = animator.GetCurrentAnimatorStateInfo(0).IsName("Idle");
 
         if (locktarget == null)
         {
-            Invoke("Think", 5f);
+
             transform.position = Vector3.MoveTowards(transform.position, startPosition - new Vector3(nextmove,0,0), movespeed * Time.deltaTime);
         }
     }
@@ -101,10 +83,30 @@ public class MonsterController : MonoBehaviour
         animator.SetBool("Attack", true);
         
     }
-    void Attack()
+    public void Attack()
     {
         playerStat.HP -= monsterstat.Attack;
         Debug.Log("공격! 플레이어 체력 " + playerStat.HP);
+    }
+    public void hit()
+    {
+        monsterstat.HP -= playerStat.Attack;
+        Debug.Log("공격! 몬스터 체력 " + monsterstat.HP);
+        isDead();
+    }
+    public void respawn()
+    {
+        gameObject.transform.position = startPosition;
+        gameObject.SetActive(true);
+    }
+    public void isDead()
+    {
+       if( monsterstat.HP <= 0)
+        {
+            gameObject.SetActive(false);
+            monsterstat.HP = monsterstat.MaxHp;
+            Invoke("respawn", 3f);
+        }
     }
     private void OnCollisionEnter(Collision collision)
     {
@@ -116,7 +118,7 @@ public class MonsterController : MonoBehaviour
 
     void Update()
     {
-
+        
         float dis = Vector3.Distance(transform.position, PlayerTrans.transform.position);
 
         if (dis < 5)
