@@ -37,6 +37,13 @@ public class PlayerController : MonoBehaviour
         _player = GetComponent<PlayerStat>();
         _monster =GetComponent<MonsterStat>();
     }
+    public void Dontmove()
+    {
+        //Todo 플레이어 입력막기
+        isjumping = true;
+        animator.SetBool("Jump", false);
+
+    }
     void Jump()
     {
         if (Input.GetKey(KeyCode.Space) && !isjumping)

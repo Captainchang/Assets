@@ -1,19 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
+using UnityEditor;
 using UnityEngine;
+using static CameraMove;
 
 public class CameraMove : MonoBehaviour
 {
-
+    public GameObject menu;
+    bool isTabactive;
+    PlayerController playerController;
+    public enum UItype
+    {
+        None,
+        UI,
+        Play,
+    }
+    UItype uitype = UItype.None;
+   
     public float mouseSensitivity = 100f;
     
     public Transform playerBody;
 
     float xRotation = 0f;
 
-    public bool PersonView;
+    bool PersonView;
 
-    void viewChange()
+    private void Start()
+    {
+
+        playerController= GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        menu.SetActive(false);
+        isTabactive = false;
+        uitype = UItype.Play;
+    }
+    void ViewChange()
     {
         if (Input.GetKeyDown(KeyCode.B) && PersonView == true)
         {
@@ -26,20 +47,57 @@ public class CameraMove : MonoBehaviour
             PersonView = true;
         }
     }
-    void Start()
+    public void MovingCamera()
     {
         Cursor.lockState = CursorLockMode.Locked;
-    }
-
-    void Update()
-    {
-        viewChange();
-
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, 17f, 42f);
         transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
         playerBody.Rotate(Vector3.up * mouseX);
+    }
+    public void LockCamera()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        playerController.Dontmove();
+        float mouseX = 0;
+        float mouseY = 0;
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, 17f, 42f);
+        transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
+        playerBody.Rotate(Vector3.up * mouseX);
+    }
+
+    void Tab()
+    {
+        //To do  플레이어 이동, 마우스 카메라 제어 둘다 막기
+        if (Input.GetKeyDown(KeyCode.Tab) && isTabactive)
+        {
+            uitype =UItype.Play;
+            menu.SetActive(false);
+            isTabactive = false;
+        }
+        else if (Input.GetKeyDown(KeyCode.Tab) && !isTabactive)
+        {
+            uitype = UItype.UI;
+            menu.SetActive(true);
+            isTabactive = true;
+        }
+
+    }
+    void Update()
+    {
+        ViewChange();
+        Tab();
+        switch(uitype)
+        {
+            case UItype.UI:
+                LockCamera();
+                break;
+            case UItype.Play:
+                MovingCamera();
+                break;
+        }
     }
 }

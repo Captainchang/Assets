@@ -23,6 +23,7 @@ public class MonsterController : MonoBehaviour
     public GameObject PlayerTrans;
     public int nextmove;
     public Animator animator;
+    public bool isDie = false;
 
     [SerializeField]
     Define.MonsterType type;
@@ -53,7 +54,6 @@ public class MonsterController : MonoBehaviour
 
         if (locktarget == null)
         {
-
             transform.position = Vector3.MoveTowards(transform.position, startPosition - new Vector3(nextmove,0,0), movespeed * Time.deltaTime);
         }
     }
@@ -90,27 +90,44 @@ public class MonsterController : MonoBehaviour
     }
     public void hit()
     {
-        monsterstat.HP -= playerStat.Attack;
-        Debug.Log("공격! 몬스터 체력 " + monsterstat.HP);
-        isDead();
+        if (isDie == false)
+        {
+            monsterstat.HP -= playerStat.Attack;
+            Debug.Log("공격! 몬스터 체력 " + monsterstat.HP);
+            isDead();
+        }
     }
-    public void respawn()
+
+
+    void Respawn()
     {
+        isDie = false;
         gameObject.transform.position = startPosition;
         gameObject.SetActive(true);
     }
+    IEnumerator Dead()
+    {
+        yield return new WaitForSeconds(2.0f);
+        gameObject.SetActive(false);
+    }
+  
     public void isDead()
     {
        if( monsterstat.HP <= 0)
         {
-            gameObject.SetActive(false);
+            isDie = true;
+            locktarget = null;
+            _state = Define.Monster.Idle;
+            animator.SetBool("isDead", true);
+
+            StartCoroutine("Dead");
             monsterstat.HP = monsterstat.MaxHp;
-            Invoke("respawn", 3f);
+            Invoke("Respawn", 5f);
         }
     }
     private void OnCollisionEnter(Collision collision)
     {
-       if(locktarget != null)
+       if(locktarget != null && isDie == false)
         {
             Attack();
         }
