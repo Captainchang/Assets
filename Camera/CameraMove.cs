@@ -50,6 +50,7 @@ public class CameraMove : MonoBehaviour
     public void MovingCamera()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        playerController.Inaction();
         float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
         float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
         xRotation -= mouseY;
@@ -61,6 +62,7 @@ public class CameraMove : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         playerController.Dontmove();
+
         float mouseX = 0;
         float mouseY = 0;
         xRotation -= mouseY;

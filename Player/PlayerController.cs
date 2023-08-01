@@ -29,6 +29,7 @@ public class PlayerController : MonoBehaviour
     public Vector3 velocity;
     float Jumpforce = 4.0f;
     public Vector3 move;
+    bool action = true;
     private void Start()
     {
         monsterController=  GameObject.FindGameObjectWithTag("Monster").GetComponent<MonsterController>();
@@ -40,14 +41,22 @@ public class PlayerController : MonoBehaviour
     public void Dontmove()
     {
         //Todo 플레이어 입력막기
+        action = false;
         isjumping = true;
         animator.SetBool("Jump", false);
-
+        _player.MoveSpeed = 0f;
+        animator.SetFloat("Speed", 0f);
+    }
+    public void Inaction()
+    {
+        action = true;
     }
     void Jump()
     {
         if (Input.GetKey(KeyCode.Space) && !isjumping)
         {
+            if (!action)
+                return;
             isjumping = true;
             _state = Define.Player.Jump;
             velocity.y = Jumpforce;
@@ -63,6 +72,8 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
+            if (!action)
+                return;
             animator.SetBool("PR", true);
             _state = Define.Player.Attack;
         }
@@ -111,12 +122,14 @@ public class PlayerController : MonoBehaviour
         }
         OnPRanim();
         //float x = Input.GetAxis("Horizontal");   // 수평 이동
-        float z = Input.GetAxis("Vertical");
+        var z = Input.GetAxis("Vertical");
         Stamina();
         var ispuuch = animator.GetCurrentAnimatorStateInfo(0).IsName("PunchR");
 
         if (z >= 0.1f && !(ispuuch))
         {
+            if (!action)
+                return;
            _state = Define.Player.Walk;
            _player.MoveSpeed = 4f;
             if (Input.GetKey(KeyCode.LeftShift) && _player.Stamina >= 10)

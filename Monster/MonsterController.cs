@@ -80,8 +80,7 @@ public class MonsterController : MonoBehaviour
     void UpdateAttack()
     {
         this.transform.LookAt(locktarget.transform);
-        animator.SetBool("Attack", true);
-        
+        animator.SetBool("Attack", true);   
     }
     public void Attack()
     {
@@ -155,6 +154,7 @@ public class MonsterController : MonoBehaviour
         {
             locktarget = hit.transform.gameObject;
         }
+
 
         switch (_state)
         {
