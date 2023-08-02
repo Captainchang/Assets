@@ -7,7 +7,7 @@ using static UnityEditor.SceneView;
 
 public class Menu : MonoBehaviour
 {
-    public GameObject menu;
+    GameObject menu;
     bool isTabactive;
     CameraMove cameramove;
 
@@ -16,7 +16,7 @@ public class Menu : MonoBehaviour
     {
         cameramove = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraMove>();
         _ui = CameraMove.UItype.Play;
-        menu.SetActive(false);
+       // menu.SetActive(false);
         isTabactive = false;
     }
 
@@ -36,6 +36,17 @@ public class Menu : MonoBehaviour
             isTabactive = true;
         }
         
+    }
+    public void Click(GameObject gameObject)
+    {
+        if (gameObject.activeSelf == true)
+        {
+            gameObject.SetActive(false);
+        }
+        else if (gameObject.activeSelf == false)
+        {
+            gameObject.SetActive(true);
+        }
     }
     
     void Update()
