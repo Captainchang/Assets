@@ -27,6 +27,7 @@ public class Define
         Idle,
         Run,
         Attack,
+        Dead,
     }
     public enum Monsteraction
     {
@@ -40,6 +41,7 @@ public class Define
         None,
         Slime,
         Turtle,
+        minotaur,
     }
     public enum UI_GameObjects
     {

@@ -43,6 +43,7 @@ public class MonsterController : MonoBehaviour
     }
     void Start()
     {
+        playerStat = PlayerTrans.GetComponent<PlayerStat>();
         monsterstat = GetComponent<MonsterStat>();
         player = GetComponent<PlayerController>();
         animator =GetComponent<Animator>();
@@ -86,6 +87,11 @@ public class MonsterController : MonoBehaviour
     {
         playerStat.HP -= monsterstat.Attack;
         Debug.Log("공격! 플레이어 체력 " + playerStat.HP);
+        if(playerStat.HP <= 0)
+        {
+            Debug.Log("죽음 ");
+            //플레이어 죽음 처리 .
+        }
     }
     public void hit()
     {
@@ -93,7 +99,7 @@ public class MonsterController : MonoBehaviour
         {
             monsterstat.HP -= playerStat.Attack;
             Debug.Log("공격! 몬스터 체력 " + monsterstat.HP);
-            isDead();
+            UpdateDead();
         }
     }
 
@@ -102,7 +108,10 @@ public class MonsterController : MonoBehaviour
     {
         isDie = false;
         gameObject.transform.position = startPosition;
+        locktarget = null;
         gameObject.SetActive(true);
+        
+        _state = Define.Monster.Idle;
     }
     IEnumerator Dead()
     {
@@ -110,13 +119,13 @@ public class MonsterController : MonoBehaviour
         gameObject.SetActive(false);
     }
   
-    public void isDead()
+    public void UpdateDead()
     {
        if( monsterstat.HP <= 0)
         {
             isDie = true;
             locktarget = null;
-            _state = Define.Monster.Idle;
+            _state = Define.Monster.Dead;
             animator.SetBool("isDead", true);
 
             StartCoroutine("Dead");
@@ -135,7 +144,7 @@ public class MonsterController : MonoBehaviour
     void Update()
     {
         
-        float dis = Vector3.Distance(transform.position, PlayerTrans.transform.position);
+        var dis = Vector3.Distance(transform.position, PlayerTrans.transform.position);
 
         if (dis < 5)
         {
@@ -143,11 +152,13 @@ public class MonsterController : MonoBehaviour
             locktarget = PlayerTrans;
             animator.SetBool("Attack", false);
         }
+
         if (dis <= 2)
         {
             _state = Define.Monster.Attack;
+            locktarget = PlayerTrans;
         }
-        Debug.DrawRay(this.transform.position + Vector3.up, Vector3.forward * 10 , Color.red);
+        //Debug.DrawRay(this.transform.position + Vector3.up, Vector3.forward * 10 , Color.red);
         RaycastHit hit;
         
         if (Physics.Raycast(this.transform.position +Vector3.up,Vector3.forward *10 ,out hit,20.0f,layer))
@@ -168,6 +179,9 @@ public class MonsterController : MonoBehaviour
 
             case Define.Monster.Attack:
                 UpdateAttack();
+                break;
+            case Define.Monster.Dead:
+                UpdateDead();
                 break;
         }
     }

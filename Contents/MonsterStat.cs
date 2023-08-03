@@ -11,16 +11,17 @@ public class MonsterStat : Stat
     {
         switch (_monster)
         {
-            case Define.MonsterType.Slime:
-                _hp = 50;
-                _maxhp= 50;
-                _attack = 2;
+            case Define.MonsterType.minotaur:
+                _hp = 200;
+                _maxhp= 200;
+                _attack = 10;
                 break;
             case Define.MonsterType.Turtle:
                 _hp = 60;
                 _maxhp = 60;
                 _attack = 3;
                 break;
+            
         }
     }
 

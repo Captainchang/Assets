@@ -124,7 +124,7 @@ public class PlayerController : MonoBehaviour
         //float x = Input.GetAxis("Horizontal");   // 수평 이동
         var z = Input.GetAxis("Vertical");
         Stamina();
-        var ispuuch = animator.GetCurrentAnimatorStateInfo(0).IsName("PunchR");
+        var ispuuch = animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
 
         if (z >= 0.1f && !(ispuuch))
         {

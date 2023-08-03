@@ -16,6 +16,7 @@ public class InventoryManager : MonoBehaviour
 
         for (int i = 0; i < Items.Length; i++)
         {
+            
             GameObject slot = Instantiate(SlotPrefab, SlotParent);
             slot.name = "Slot" + (i + 1);
             slot.SetActive(true);
