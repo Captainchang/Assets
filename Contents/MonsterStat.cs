@@ -20,9 +20,7 @@ public class MonsterStat : Stat
                 _hp = 60;
                 _maxhp = 60;
                 _attack = 3;
-                break;
-            
+                break; 
         }
     }
-
 }

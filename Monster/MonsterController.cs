@@ -17,6 +17,7 @@ public class MonsterController : MonoBehaviour
     [SerializeField]
     PlayerStat playerStat;
 
+    [SerializeField]
     MonsterStat monsterstat;
     [SerializeField]
     private GameObject locktarget;
@@ -26,7 +27,7 @@ public class MonsterController : MonoBehaviour
     public bool isDie = false;
 
     [SerializeField]
-    Define.MonsterType type;
+    public Define.MonsterType type;
     [SerializeField]
     LayerMask layer;
     [SerializeField]
@@ -80,8 +81,14 @@ public class MonsterController : MonoBehaviour
     }
     void UpdateAttack()
     {
-        this.transform.LookAt(locktarget.transform);
-        animator.SetBool("Attack", true);   
+        Vector3 lookdis = locktarget.transform.position - transform.position;
+        lookdis.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(lookdis);
+        transform.rotation = rotation;
+
+        //this.transform.LookAt(locktarget.transform);
+        animator.SetBool("Attack", true);
+   
     }
     public void Attack()
     {
@@ -93,11 +100,24 @@ public class MonsterController : MonoBehaviour
             //플레이어 죽음 처리 .
         }
     }
-    public void hit()
+    virtual public void hit(GameObject monstergameObject)
     {
+ 
         if (isDie == false)
         {
-            monsterstat.HP -= playerStat.Attack;
+           // monsterstat = monstergameObject.GetComponent<MonsterStat>();
+            switch (type)
+            {
+                case Define.MonsterType.Turtle :
+                    monsterstat.HP -= playerStat.Attack *2;
+                    break;
+                case Define.MonsterType.minotaur:
+                    monsterstat.HP -= playerStat.Attack * 1/2;
+                    break;
+                default:
+                    monsterstat.HP -= playerStat.Attack;
+                    break;
+            }
             Debug.Log("공격! 몬스터 체력 " + monsterstat.HP);
             UpdateDead();
         }

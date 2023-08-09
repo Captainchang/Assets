@@ -10,6 +10,7 @@ public class PlayerController : MonoBehaviour
     Define.Player _state = Define.Player.Idle;
 
     MonsterController monsterController;
+    MonsterStat monsterStat;
     PlayerStat _player;
     [SerializeField]
     MonsterStat _monster;
@@ -19,7 +20,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private GameObject locktarget;
     [SerializeField]
-    LayerMask layer;
+    LayerMask Monster_layer;
+    [SerializeField]
+    LayerMask Npc_layer;
+    Texture2D Basic;
+    [SerializeField]
+    GameObject Quest;
 
     [Header("이동")]
     [Space (10)]
@@ -33,6 +39,7 @@ public class PlayerController : MonoBehaviour
     private void Start()
     {
         monsterController=  GameObject.FindGameObjectWithTag("Monster").GetComponent<MonsterController>();
+        monsterStat = GameObject.FindGameObjectWithTag("Monster").GetComponent<MonsterStat>();
         anim = GetComponent<Animation>();
         animator = GetComponent<Animator>();
         _player = GetComponent<PlayerStat>();
@@ -47,9 +54,26 @@ public class PlayerController : MonoBehaviour
         _player.MoveSpeed = 0f;
         animator.SetFloat("Speed", 0f);
     }
+    void UpdateMouseCursor()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+        RaycastHit hit;
+
+        Basic = Resources.Load<Texture2D>("Cursor/Basic");
+        Cursor.SetCursor(Basic, new Vector2(Basic.width / 3, 0), CursorMode.Auto);
+    }
     public void Inaction()
     {
         action = true;
+    }
+    void Npc_quest()
+    {
+        
+        if (Input.GetKey(KeyCode.F))
+        {
+            Quest.SetActive(true);
+        }
     }
     void Jump()
     {
@@ -86,7 +110,7 @@ public class PlayerController : MonoBehaviour
 
             if (dis <= 2 )
             {
-                monsterController.hit();
+                monsterController.hit(locktarget);
             }
         }
     }
@@ -107,23 +131,34 @@ public class PlayerController : MonoBehaviour
     }
     private void Update()
     {
+        UpdateMouseCursor();
+        Stamina();
+        OnPRanim();
+
         var playerForward = transform.forward;
         var rayDir = playerForward * 10f;
         Debug.DrawRay(this.transform.position + Vector3.up, rayDir, Color.red);
         RaycastHit hit;
-
-        if (Physics.Raycast(this.transform.position + Vector3.up, rayDir, out hit, 20.0f, layer))
+        if (Physics.Raycast(this.transform.position + Vector3.up, rayDir, out hit, 20.0f, Monster_layer))
         {
-            locktarget = hit.transform.gameObject;  
+            locktarget = hit.transform.gameObject;
         }
         else
         {
             locktarget = null;
         }
-        OnPRanim();
+
+        if (Physics.Raycast(this.transform.position + Vector3.up, rayDir, out hit, 20.0f, Npc_layer))
+        {
+            Npc_quest();
+        }
+        else
+        {
+            Quest.SetActive(false);
+        }
         //float x = Input.GetAxis("Horizontal");   // 수평 이동
         var z = Input.GetAxis("Vertical");
-        Stamina();
+
         var ispuuch = animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
 
         if (z >= 0.1f && !(ispuuch))
