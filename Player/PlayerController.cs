@@ -11,11 +11,13 @@ public class PlayerController : MonoBehaviour
 
     MonsterController monsterController;
     MonsterStat monsterStat;
+    [SerializeField]
     PlayerStat _player;
     [SerializeField]
     MonsterStat _monster;
     public CharacterController controller;
     public Animation anim;
+    
     public Animator animator;
     [SerializeField]
     private GameObject locktarget;
@@ -38,7 +40,7 @@ public class PlayerController : MonoBehaviour
     bool action = true;
     private void Start()
     {
-        monsterController=  GameObject.FindGameObjectWithTag("Monster").GetComponent<MonsterController>();
+        //monsterController=  GameObject.FindGameObjectWithTag("Monster").GetComponent<MonsterController>();
         monsterStat = GameObject.FindGameObjectWithTag("Monster").GetComponent<MonsterStat>();
         anim = GetComponent<Animation>();
         animator = GetComponent<Animator>();
@@ -110,7 +112,15 @@ public class PlayerController : MonoBehaviour
 
             if (dis <= 2 )
             {
-                monsterController.hit(locktarget);
+                if (monsterController == null)
+                {
+                    monsterController = locktarget.GetComponent<MonsterController>();
+                }
+                if (monsterController != null)
+                {
+                    monsterController.hit();
+                    monsterController = null;
+                }
             }
         }
     }

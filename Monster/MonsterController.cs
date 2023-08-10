@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.UI;
 using static Define;
 
 public class MonsterController : MonoBehaviour
@@ -16,6 +17,8 @@ public class MonsterController : MonoBehaviour
     private PlayerController player;
     [SerializeField]
     PlayerStat playerStat;
+    [SerializeField]
+    GameObject dmgtext;
 
     [SerializeField]
     MonsterStat monsterstat;
@@ -49,7 +52,6 @@ public class MonsterController : MonoBehaviour
         player = GetComponent<PlayerController>();
         animator =GetComponent<Animator>();
     }
-
     void UpdateIdle()
     {
         var isidle = animator.GetCurrentAnimatorStateInfo(0).IsName("Idle");
@@ -60,6 +62,11 @@ public class MonsterController : MonoBehaviour
         }
     }
 
+    void DamageText()
+    {
+        //GameObject damageText = Instantiate(dmgtext,canvas.transform);
+       // damageText.transform.position = transform.position;
+    }
     void UpdateRun()
     {
         if (locktarget != null)
@@ -70,6 +77,13 @@ public class MonsterController : MonoBehaviour
 
             float playerdis = Vector3.Distance(transform.position, locktarget.transform.position);
             //Debug.Log(maxdistance);
+
+            //미노타우루스 특수패턴 , 컨트롤러 분리 해야함 
+          /*  if (playerdis > 5)
+            {
+                animator.SetTrigger("Kick");
+                transform.position = Vector3.MoveTowards(transform.position, locktarget.transform.position - new Vector3(1,0,1), 1f);
+            }*/
             if (playerdis > 15)
             {
                 animator.SetFloat("movespeed", 0.0f);
@@ -100,7 +114,7 @@ public class MonsterController : MonoBehaviour
             //플레이어 죽음 처리 .
         }
     }
-    virtual public void hit(GameObject monstergameObject)
+    virtual public void hit()
     {
  
         if (isDie == false)
@@ -109,12 +123,15 @@ public class MonsterController : MonoBehaviour
             switch (type)
             {
                 case Define.MonsterType.Turtle :
+                    DamageText();
                     monsterstat.HP -= playerStat.Attack *2;
                     break;
                 case Define.MonsterType.minotaur:
+                    DamageText();
                     monsterstat.HP -= playerStat.Attack * 1/2;
                     break;
                 default:
+                    DamageText();
                     monsterstat.HP -= playerStat.Attack;
                     break;
             }
@@ -135,7 +152,7 @@ public class MonsterController : MonoBehaviour
     }
     IEnumerator Dead()
     {
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(1.0f);
         gameObject.SetActive(false);
     }
   
@@ -185,7 +202,6 @@ public class MonsterController : MonoBehaviour
         {
             locktarget = hit.transform.gameObject;
         }
-
 
         switch (_state)
         {

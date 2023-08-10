@@ -19,7 +19,7 @@ public class PlayerStat : Stat
         _level = 1;
         _hp = 100;
         _maxhp = 100;
-        _attack = 10;
+        _attack = 100;
         _defense = 5;
         _stamina = 100;
         _maxstamina= 100;
