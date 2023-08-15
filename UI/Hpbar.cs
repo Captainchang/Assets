@@ -18,7 +18,6 @@ public class Hpbar : MonoBehaviour
 
     }
 
-
     public void SetHpRatio(float ratio)
     {
         gameObject.GetComponent<Slider>().value = ratio;

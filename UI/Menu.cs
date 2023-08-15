@@ -10,14 +10,17 @@ public class Menu : MonoBehaviour
     GameObject menu;
     bool isTabactive;
     CameraMove cameramove;
+    Vector3 startposion;
 
     CameraMove.UItype _ui = CameraMove.UItype.None;
     void Start()
     {
+        
         cameramove = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraMove>();
         _ui = CameraMove.UItype.Play;
        // menu.SetActive(false);
         isTabactive = false;
+        startposion = gameObject.transform.localPosition;
     }
 
     void Tab()
@@ -41,16 +44,14 @@ public class Menu : MonoBehaviour
     {
         if (gameObject.activeSelf == true)
         {
+
             gameObject.SetActive(false);
         }
         else if (gameObject.activeSelf == false)
         {
+            gameObject.transform.localPosition = startposion;
+
             gameObject.SetActive(true);
         }
-    }
-    
-    void Update()
-    {
-
     }
 }

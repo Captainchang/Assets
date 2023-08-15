@@ -71,7 +71,6 @@ public class PlayerController : MonoBehaviour
     }
     void Npc_quest()
     {
-        
         if (Input.GetKey(KeyCode.F))
         {
             Quest.SetActive(true);
@@ -200,6 +199,6 @@ public class PlayerController : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
 
-       controller.Move(velocity * Time.deltaTime);
+       controller.Move(velocity* Time.deltaTime);
     }
 }

@@ -167,7 +167,7 @@ public class MonsterController : MonoBehaviour
 
             StartCoroutine("Dead");
             monsterstat.HP = monsterstat.MaxHp;
-            Invoke("Respawn", 5f);
+            Invoke("Respawn", 10f);
         }
     }
     private void OnCollisionEnter(Collision collision)
