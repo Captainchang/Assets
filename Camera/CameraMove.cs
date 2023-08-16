@@ -15,6 +15,7 @@ public class CameraMove : MonoBehaviour
         None,
         UI,
         Play,
+        Talk,
     }
     UItype uitype = UItype.None;
    
@@ -74,19 +75,30 @@ public class CameraMove : MonoBehaviour
     void Tab()
     {
         //To do  플레이어 이동, 마우스 카메라 제어 둘다 막기
-        if (Input.GetKeyDown(KeyCode.Tab) && isTabactive)
+        if (Input.GetKeyDown(KeyCode.Tab) && uitype == UItype.UI)
         {
             uitype =UItype.Play;
             menu.SetActive(false);
             isTabactive = false;
         }
-        else if (Input.GetKeyDown(KeyCode.Tab) && !isTabactive)
+        else if (Input.GetKeyDown(KeyCode.Tab) && uitype == UItype.Play)
         {
             uitype = UItype.UI;
             menu.SetActive(true);
             isTabactive = true;
         }
-
+    }
+    public void TypeUI()
+    {
+        uitype = UItype.Talk;
+        transform.localPosition = new Vector3(0, 1.86f, 0.4f);
+        PersonView = true;
+    }
+    public void TypePlay()
+    {
+        uitype= UItype.Play;
+        transform.localPosition = new Vector3(0, 3.3f, -4.7f);
+        PersonView = false;
     }
     void Update()
     {
@@ -100,6 +112,10 @@ public class CameraMove : MonoBehaviour
             case UItype.Play:
                 MovingCamera();
                 break;
+            case UItype.Talk:
+                LockCamera();
+                break;
+
         }
     }
 }

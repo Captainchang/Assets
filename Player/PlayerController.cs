@@ -8,7 +8,8 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 public class PlayerController : MonoBehaviour
 {
     Define.Player _state = Define.Player.Idle;
-
+    [SerializeField]
+    QuestManager questManager;
     MonsterController monsterController;
     MonsterStat monsterStat;
     [SerializeField]
@@ -21,13 +22,16 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     [SerializeField]
     private GameObject locktarget;
+
+    [SerializeField]
+    GameObject talkobj;
+    private GameObject Npc;
     [SerializeField]
     LayerMask Monster_layer;
     [SerializeField]
     LayerMask Npc_layer;
     Texture2D Basic;
-    [SerializeField]
-    GameObject Quest;
+
 
     [Header("이동")]
     [Space (10)]
@@ -71,10 +75,16 @@ public class PlayerController : MonoBehaviour
     }
     void Npc_quest()
     {
-        if (Input.GetKey(KeyCode.F))
+        if (Input.GetKeyDown(KeyCode.F))
         {
-            Quest.SetActive(true);
+            StartCoroutine("TalkStart");
         }
+
+    }
+    IEnumerator TalkStart()
+    {
+        questManager.Action(Npc);
+        yield return new WaitForSeconds(0.1f);
     }
     void Jump()
     {
@@ -159,11 +169,13 @@ public class PlayerController : MonoBehaviour
 
         if (Physics.Raycast(this.transform.position + Vector3.up, rayDir, out hit, 20.0f, Npc_layer))
         {
+            Npc = hit.transform.gameObject;
+            talkobj.SetActive(true);
             Npc_quest();
         }
         else
         {
-            Quest.SetActive(false);
+            talkobj.SetActive(false);
         }
         //float x = Input.GetAxis("Horizontal");   // 수평 이동
         var z = Input.GetAxis("Vertical");

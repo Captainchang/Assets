@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Title : MonoBehaviour
 {
-   
+    public GameObject Titleobj;
     void Start()
     {
         Invoke("hide", 1.5f);
     }
     void hide()
     {
-        gameObject.SetActive(false);
+        Titleobj.SetActive(false);
     }
 
 }
