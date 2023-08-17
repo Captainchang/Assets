@@ -208,11 +208,9 @@ public class MonsterController : MonoBehaviour
             case Define.Monster.Idle:
                 UpdateIdle();
                 break;
-
             case Define.Monster.Run:
                 UpdateRun();
                 break;
-
             case Define.Monster.Attack:
                 UpdateAttack();
                 break;

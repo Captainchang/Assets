@@ -1,3 +1,4 @@
+using Microsoft.Unity.VisualStudio.Editor;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -13,11 +14,17 @@ public class QuestManager : MonoBehaviour
     GameObject questwindow;
     public CameraMove cameramove;
     public TalkManager talkManager;
+    public ProgressManager progressManager;
     public TextMeshProUGUI talkText;
+    public TextMeshProUGUI QuestText;
     public GameObject scanobj;
     public int talkIndex;
     bool isAction;
 
+    private void Start()
+    {
+        Debug.Log(progressManager.CheckQuest());
+    }
     public void Action(GameObject scanobject)
     {
         scanobj = scanobject;
@@ -28,13 +35,16 @@ public class QuestManager : MonoBehaviour
 
     void Talk(int id, bool isNpc)
     {
-        string talkData =  talkManager.GetTalk(id, talkIndex);
+        int questTalkIndex = progressManager.GetQuestTalkIndex(id);
+        string talkData =  talkManager.GetTalk(id + questTalkIndex, talkIndex);
 
         if(talkData == null)
         {
             isAction = false;
             talkIndex = 0;
             cameramove.TypePlay();
+            Debug.Log(progressManager.CheckQuest(id));
+            QuestText.text = progressManager.CheckQuest(id);
             return;
         }
         if (isNpc)

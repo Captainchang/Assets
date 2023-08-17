@@ -175,6 +175,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            Npc = null;
             talkobj.SetActive(false);
         }
         //float x = Input.GetAxis("Horizontal");   // 수평 이동
