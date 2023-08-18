@@ -31,7 +31,8 @@ public class CameraMove : MonoBehaviour
     {
 
         playerController= GameObject.FindWithTag("Player").GetComponent<PlayerController>();
-        Tabfalse();
+        menu.SetActive(false);
+        isTabactive = false;
         uitype = UItype.Play;
     }
     void ViewChange()
