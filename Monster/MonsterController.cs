@@ -28,6 +28,7 @@ public class MonsterController : MonoBehaviour
     public int nextmove;
     public Animator animator;
     public bool isDie = false;
+    BoxCollider boxCollider;
 
     [SerializeField]
     public Define.MonsterType type;
@@ -51,6 +52,7 @@ public class MonsterController : MonoBehaviour
         monsterstat = GetComponent<MonsterStat>();
         player = GetComponent<PlayerController>();
         animator =GetComponent<Animator>();
+        boxCollider= gameObject.GetComponent<BoxCollider>();
     }
     void UpdateIdle()
     {
@@ -146,12 +148,14 @@ public class MonsterController : MonoBehaviour
         isDie = false;
         gameObject.transform.position = startPosition;
         locktarget = null;
+        boxCollider.enabled = true;
         gameObject.SetActive(true);
         
         _state = Define.Monster.Idle;
     }
     IEnumerator Dead()
     {
+        boxCollider.enabled = false;
         yield return new WaitForSeconds(1.0f);
         gameObject.SetActive(false);
     }

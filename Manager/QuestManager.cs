@@ -18,12 +18,16 @@ public class QuestManager : MonoBehaviour
     public TextMeshProUGUI talkText;
     public TextMeshProUGUI QuestText;
     public GameObject scanobj;
+    [SerializeField]
+    GameObject[] npcMark;
     public int talkIndex;
     bool isAction;
-
+    public int questTalkIndex;
     private void Start()
     {
+        NpcMarkreset();
         Debug.Log(progressManager.CheckQuest());
+        questTalkIndex = 10;
     }
     public void Action(GameObject scanobject)
     {
@@ -32,11 +36,17 @@ public class QuestManager : MonoBehaviour
         Talk(objdata.id, objdata.isNPC);
         questwindow.SetActive(isAction);
     }
-
+    void NpcMarkreset()
+    {
+        for(int i = 0; i < npcMark.Length; i++)
+        {
+            npcMark[i].SetActive(false);
+        }
+    }
     void Talk(int id, bool isNpc)
     {
-        int questTalkIndex = progressManager.GetQuestTalkIndex(id);
-        string talkData =  talkManager.GetTalk(id + questTalkIndex, talkIndex);
+        questTalkIndex = progressManager.GetQuestTalkIndex(id);
+        string talkData = talkManager.GetTalk(id + questTalkIndex, talkIndex);
 
         if(talkData == null)
         {
@@ -58,5 +68,19 @@ public class QuestManager : MonoBehaviour
         isAction = true;
         cameramove.TypeUI();
         talkIndex++;
+    }
+    private void Update()
+    {
+        switch (questTalkIndex)
+        {
+            case 10:
+                NpcMarkreset();
+                npcMark[0].SetActive(true);
+                break;
+            case 21:
+                NpcMarkreset();
+                npcMark[1].SetActive(true);
+                break;
+        }
     }
 }

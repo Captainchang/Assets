@@ -31,8 +31,7 @@ public class CameraMove : MonoBehaviour
     {
 
         playerController= GameObject.FindWithTag("Player").GetComponent<PlayerController>();
-        menu.SetActive(false);
-        isTabactive = false;
+        Tabfalse();
         uitype = UItype.Play;
     }
     void ViewChange()
@@ -78,8 +77,7 @@ public class CameraMove : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Tab) && uitype == UItype.UI)
         {
             uitype =UItype.Play;
-            menu.SetActive(false);
-            isTabactive = false;
+            Tabfalse();
         }
         else if (Input.GetKeyDown(KeyCode.Tab) && uitype == UItype.Play)
         {
@@ -87,6 +85,11 @@ public class CameraMove : MonoBehaviour
             menu.SetActive(true);
             isTabactive = true;
         }
+    }
+    void Tabfalse()
+    {
+        menu.SetActive(false);
+        isTabactive = false;
     }
     public void TypeUI()
     {
@@ -114,6 +117,7 @@ public class CameraMove : MonoBehaviour
                 break;
             case UItype.Talk:
                 LockCamera();
+                Tabfalse();
                 break;
 
         }

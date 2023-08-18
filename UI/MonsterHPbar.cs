@@ -3,22 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Hpbar : MonoBehaviour
+public class MonsterHPbar : Hpbar
 {
     Define.UI_GameObjects _uitype = Define.UI_GameObjects.Hpbar;
 
     float Hp;
-    public Stat _stat;
- 
+    public PlayerController player;
+
     void Update()
     {
-
-        Hp = _stat.HP / (float)_stat.MaxHp;
+        var monsterhp = player.GetLocktarget();
+        Hp = monsterhp.HP / (float)monsterhp.MaxHp;
         SetHpRatio(Hp);
-    }
-
-    public void SetHpRatio(float ratio)
-    {
-        gameObject.GetComponent<Slider>().value = ratio;
     }
 }

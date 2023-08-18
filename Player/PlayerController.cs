@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     [SerializeField]
     private GameObject locktarget;
+    [SerializeField]
+    GameObject monsterHP;
 
     [SerializeField]
     GameObject talkobj;
@@ -139,6 +141,10 @@ public class PlayerController : MonoBehaviour
         Attack();
         _state = Define.Player.Idle;
     }
+    public MonsterStat GetLocktarget()
+    {
+        return locktarget.GetComponent<MonsterStat>();
+    }
     void Stamina()
     {
         if (_player.Stamina <= _player.MaxStamina && _state != Define.Player.Run)
@@ -160,10 +166,12 @@ public class PlayerController : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(this.transform.position + Vector3.up, rayDir, out hit, 20.0f, Monster_layer))
         {
+            monsterHP.SetActive(true);
             locktarget = hit.transform.gameObject;
         }
         else
         {
+            monsterHP.SetActive(false);
             locktarget = null;
         }
 
