@@ -77,7 +77,8 @@ public class CameraMove : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Tab) && uitype == UItype.UI)
         {
             uitype =UItype.Play;
-            Tabfalse();
+            menu.SetActive(false);
+            isTabactive = false;
         }
         else if (Input.GetKeyDown(KeyCode.Tab) && uitype == UItype.Play)
         {
