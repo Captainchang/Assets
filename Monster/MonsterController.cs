@@ -44,7 +44,8 @@ public class MonsterController : MonoBehaviour
         PlayerTrans = GameObject.FindWithTag("Player");
         startPosition = transform.position;
         _state = Define.Monster.Idle;
-       
+        nextmove = 3;
+
     }
     void Start()
     {
@@ -57,10 +58,11 @@ public class MonsterController : MonoBehaviour
     void UpdateIdle()
     {
         var isidle = animator.GetCurrentAnimatorStateInfo(0).IsName("Idle");
+        //animator.CrossFade("Idle",0.5f); TO DO
 
         if (locktarget == null)
         {
-            transform.position = Vector3.MoveTowards(transform.position, startPosition - new Vector3(nextmove,0,0), movespeed * Time.deltaTime);
+            gameObject.transform.position = Vector3.MoveTowards(transform.position, startPosition - new Vector3(nextmove,0,0), movespeed * Time.deltaTime);
         }
     }
 
@@ -104,7 +106,7 @@ public class MonsterController : MonoBehaviour
 
         //this.transform.LookAt(locktarget.transform);
         animator.SetBool("Attack", true);
-   
+        //animator.CrossFade("Attack2",0.5f);
     }
     public void Attack()
     {
@@ -116,11 +118,11 @@ public class MonsterController : MonoBehaviour
             //플레이어 죽음 처리 .
         }
     }
-    virtual public void hit()
-    {
- 
+    virtual public void Hit()
+    { 
         if (isDie == false)
         {
+            _state = Define.Monster.Hit;
            // monsterstat = monstergameObject.GetComponent<MonsterStat>();
             switch (type)
             {
@@ -131,17 +133,24 @@ public class MonsterController : MonoBehaviour
                 case Define.MonsterType.minotaur:
                     DamageText();
                     monsterstat.HP -= playerStat.Attack * 1/2;
+                    var num =  Random.Range(1, 11); //num를 플레이어 블락 능력치로 만들기
+                    if(num > 5)
+                        animator.SetBool("Hit",true);
                     break;
                 default:
                     DamageText();
                     monsterstat.HP -= playerStat.Attack;
+                    animator.SetBool("Hit", true);
                     break;
             }
             Debug.Log("공격! 몬스터 체력 " + monsterstat.HP);
             UpdateDead();
         }
     }
-
+    public void HitAnimationend()
+    {
+        animator.SetBool("Hit", false);
+    }
 
     void Respawn()
     {
@@ -174,14 +183,14 @@ public class MonsterController : MonoBehaviour
             Invoke("Respawn", 10f);
         }
     }
-    private void OnCollisionEnter(Collision collision)
+   /* private void OnCollisionEnter(Collision collision)
     {
        if(locktarget != null && isDie == false)
         {
             Attack();
         }
     }
-
+    공격 데미지 넣는 부분 */ 
     void Update()
     {
         
@@ -212,10 +221,13 @@ public class MonsterController : MonoBehaviour
             case Define.Monster.Idle:
                 UpdateIdle();
                 break;
-            case Define.Monster.Run:
+            case Define.Monster.Run:              
                 UpdateRun();
                 break;
-            case Define.Monster.Attack:
+            case Define.Monster.Hit:
+                Hit();
+                break;
+            case Define.Monster.Attack:             
                 UpdateAttack();
                 break;
             case Define.Monster.Dead:

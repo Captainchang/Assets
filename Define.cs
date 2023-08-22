@@ -25,6 +25,7 @@ public class Define
     {
         None,
         Idle,
+        Hit,
         Run,
         Attack,
         Dead,

@@ -18,7 +18,7 @@ public class PlayerController : MonoBehaviour
     MonsterStat _monster;
     public CharacterController controller;
     public Animation anim;
-    
+
     public Animator animator;
     [SerializeField]
     private GameObject locktarget;
@@ -52,6 +52,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         _player = GetComponent<PlayerStat>();
         _monster =GetComponent<MonsterStat>();
+
     }
     public void Dontmove()
     {
@@ -129,7 +130,7 @@ public class PlayerController : MonoBehaviour
                 }
                 if (monsterController != null)
                 {
-                    monsterController.hit();
+                    monsterController.Hit();
                     monsterController = null;
                 }
             }
@@ -167,11 +168,13 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(this.transform.position + Vector3.up, rayDir, out hit, 20.0f, Monster_layer))
         {
             monsterHP.SetActive(true);
+            animator.SetBool("Combat",true);
             locktarget = hit.transform.gameObject;
         }
         else
         {
             monsterHP.SetActive(false);
+            animator.SetBool("Combat", false);
             locktarget = null;
         }
 

@@ -10,6 +10,7 @@ public class CameraMove : MonoBehaviour
     public GameObject menu;
     bool isTabactive;
     PlayerController playerController;
+    public GameObject Npc_name;
     public enum UItype
     {
         None,
@@ -58,6 +59,7 @@ public class CameraMove : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, 17f, 42f);
         transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
         playerBody.Rotate(Vector3.up * mouseX);
+        Npc_name.SetActive(true);
     }
     public void LockCamera()
     {
@@ -70,6 +72,7 @@ public class CameraMove : MonoBehaviour
         xRotation = Mathf.Clamp(xRotation, 17f, 42f);
         transform.localRotation = Quaternion.Euler(xRotation, 0, 0);
         playerBody.Rotate(Vector3.up * mouseX);
+        Npc_name.SetActive(false);
     }
 
     void Tab()
