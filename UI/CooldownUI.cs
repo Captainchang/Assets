@@ -39,7 +39,7 @@ public class CooldownUI : MonoBehaviour
     }
     void Trigger_Skill()
     {
-        if (!isEnded) return;
+        if (!isEnded) return; // todo 나중에 플레이어 레벨 안되면 안눌리게
 
         Reset_CoolTime();
     }

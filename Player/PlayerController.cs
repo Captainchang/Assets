@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 using static Define;
 using static UnityEditor.Experimental.GraphView.GraphView;
 
@@ -34,6 +35,13 @@ public class PlayerController : MonoBehaviour
     LayerMask Npc_layer;
     Texture2D Basic;
 
+    [Header("소리")]
+    [Space(10)]
+    [SerializeField]
+    AudioClip leftfootstep;
+    [SerializeField]
+    AudioClip rightfootstep;
+
 
     [Header("이동")]
     [Space (10)]
@@ -52,6 +60,10 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         _player = GetComponent<PlayerStat>();
         _monster =GetComponent<MonsterStat>();
+
+
+        leftfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk1");
+        rightfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk2");
 
     }
     public void Dontmove()
@@ -82,12 +94,19 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine("TalkStart");
         }
-
     }
     IEnumerator TalkStart()
     {
         questManager.Action(Npc);
         yield return new WaitForSeconds(0.1f);
+    }
+    void Leftfoot()
+    {
+        AudioSource.PlayClipAtPoint(leftfootstep, Camera.main.transform.position);
+    }
+    void Rightfoot()
+    {
+        AudioSource.PlayClipAtPoint(rightfootstep, Camera.main.transform.position);
     }
     void Jump()
     {
@@ -116,6 +135,14 @@ public class PlayerController : MonoBehaviour
             _state = Define.Player.Attack;
         }
     }
+    public void TakingDamage()
+    {
+        animator.SetBool("Hit", true);
+    }
+    public void DamageanimEnd()
+    {
+        animator.SetBool("Hit", false);
+    }
     void Attack()
     {
         if (locktarget != null)
@@ -136,6 +163,7 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+
     void OnPRanimFinish()
     {
         animator.SetBool("PR", false);

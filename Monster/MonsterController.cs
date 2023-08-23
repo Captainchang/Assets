@@ -13,7 +13,8 @@ public class MonsterController : MonoBehaviour
     Define.Monster _state = Define.Monster.None;
     Define.MonsterType _type = Define.MonsterType.None;
     Define.Monsteraction _action = Define.Monsteraction.Move;
-    
+
+    [SerializeField]
     private PlayerController player;
     [SerializeField]
     PlayerStat playerStat;
@@ -51,7 +52,7 @@ public class MonsterController : MonoBehaviour
     {
         playerStat = PlayerTrans.GetComponent<PlayerStat>();
         monsterstat = GetComponent<MonsterStat>();
-        player = GetComponent<PlayerController>();
+        player = PlayerTrans.GetComponent<PlayerController>();
         animator =GetComponent<Animator>();
         boxCollider= gameObject.GetComponent<BoxCollider>();
     }
@@ -111,6 +112,7 @@ public class MonsterController : MonoBehaviour
     public void Attack()
     {
         playerStat.HP -= monsterstat.Attack;
+        player.TakingDamage();
         Debug.Log("공격! 플레이어 체력 " + playerStat.HP);
         if(playerStat.HP <= 0)
         {
