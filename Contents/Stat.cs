@@ -31,7 +31,7 @@ public class Stat : MonoBehaviour
     public float Stamina { get { return _stamina; } set { _stamina = value; } }
     public float MaxStamina { get { return _maxstamina; } set { _maxstamina = value; } }
 
-    public void Start()
+    public void Awake()
     {
         _level = 1;
         _hp = 100;

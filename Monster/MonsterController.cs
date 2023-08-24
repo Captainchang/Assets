@@ -21,6 +21,7 @@ public class MonsterController : MonoBehaviour
     [SerializeField]
     GameObject dmgtext;
 
+
     [SerializeField]
     MonsterStat monsterstat;
     [SerializeField]
@@ -54,7 +55,7 @@ public class MonsterController : MonoBehaviour
         monsterstat = GetComponent<MonsterStat>();
         player = PlayerTrans.GetComponent<PlayerController>();
         animator =GetComponent<Animator>();
-        boxCollider= gameObject.GetComponent<BoxCollider>();
+        boxCollider = gameObject.GetComponent<BoxCollider>();
     }
     void UpdateIdle()
     {
@@ -113,6 +114,7 @@ public class MonsterController : MonoBehaviour
     {
         playerStat.HP -= monsterstat.Attack;
         player.TakingDamage();
+        PlayerStatUI.Instance.UpdateHp();
         Debug.Log("공격! 플레이어 체력 " + playerStat.HP);
         if(playerStat.HP <= 0)
         {

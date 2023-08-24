@@ -61,7 +61,6 @@ public class PlayerController : MonoBehaviour
         _player = GetComponent<PlayerStat>();
         _monster =GetComponent<MonsterStat>();
 
-
         leftfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk1");
         rightfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk2");
 
@@ -78,8 +77,6 @@ public class PlayerController : MonoBehaviour
     void UpdateMouseCursor()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        RaycastHit hit;
 
         Basic = Resources.Load<Texture2D>("Cursor/Basic");
         Cursor.SetCursor(Basic, new Vector2(Basic.width / 3, 0), CursorMode.Auto);
