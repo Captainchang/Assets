@@ -14,19 +14,21 @@ public class MonsterController : MonoBehaviour
     Define.MonsterType _type = Define.MonsterType.None;
     Define.Monsteraction _action = Define.Monsteraction.Move;
 
+    [Header("플레이어 관련")]
+    [Space(10)]
     [SerializeField]
     private PlayerController player;
     [SerializeField]
     PlayerStat playerStat;
     [SerializeField]
     GameObject dmgtext;
-
-
     [SerializeField]
     MonsterStat monsterstat;
     [SerializeField]
     private GameObject locktarget;
     public GameObject PlayerTrans;
+
+    [Space(10)]
     public int nextmove;
     public Animator animator;
     public bool isDie = false;
@@ -40,22 +42,25 @@ public class MonsterController : MonoBehaviour
     private float movespeed = 3.0f;
    
     public Vector3 startPosition;
-
+    
+    
     private void Awake()
     {
         PlayerTrans = GameObject.FindWithTag("Player");
         startPosition = transform.position;
         _state = Define.Monster.Idle;
         nextmove = 3;
-
+        
     }
     void Start()
     {
+        
         playerStat = PlayerTrans.GetComponent<PlayerStat>();
         monsterstat = GetComponent<MonsterStat>();
         player = PlayerTrans.GetComponent<PlayerController>();
         animator =GetComponent<Animator>();
         boxCollider = gameObject.GetComponent<BoxCollider>();
+
     }
     void UpdateIdle()
     {
@@ -122,6 +127,15 @@ public class MonsterController : MonoBehaviour
             //플레이어 죽음 처리 .
         }
     }
+    void Block()
+    {
+        animator.SetBool("Hit", true);
+    }
+    void BlockSuccess()
+    {
+        PlayerController.OnBlock += Block;
+        Debug.Log("Blocking");
+    }
     virtual public void Hit()
     { 
         if (isDie == false)
@@ -136,10 +150,8 @@ public class MonsterController : MonoBehaviour
                     break;
                 case Define.MonsterType.minotaur:
                     DamageText();
-                    monsterstat.HP -= playerStat.Attack * 1/2;
-                    var num =  Random.Range(1, 11); //num를 플레이어 블락 능력치로 만들기
-                    if(num > 5)
-                        animator.SetBool("Hit",true);
+                    monsterstat.HP -= playerStat.Attack * 1 / 2;        
+                    animator.SetBool("Hit",true);
                     break;
                 default:
                     DamageText();

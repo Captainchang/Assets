@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -8,6 +9,9 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerController : MonoBehaviour
 {
+    public delegate void BlockDelegate();
+    public static event BlockDelegate OnBlock;
+
     Define.Player _state = Define.Player.Idle;
     [SerializeField]
     QuestManager questManager;
@@ -52,6 +56,19 @@ public class PlayerController : MonoBehaviour
     float Jumpforce = 4.0f;
     public Vector3 move;
     bool action = true;
+
+    enum AttackStage 
+    {
+        None,
+        Attack1,
+        Attack2,
+        Attack3
+    }
+
+    AttackStage attackStage = AttackStage.None;
+    bool isAttacking = false;
+    float attackCooldown = 1.0f;
+    float lastAttackTime = 0.0f;
     private void Start()
     {
         //monsterController=  GameObject.FindGameObjectWithTag("Monster").GetComponent<MonsterController>();
@@ -61,6 +78,7 @@ public class PlayerController : MonoBehaviour
         _player = GetComponent<PlayerStat>();
         _monster =GetComponent<MonsterStat>();
 
+        attackStage = AttackStage.None;
         leftfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk1");
         rightfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk2");
 
@@ -122,23 +140,68 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Jump", false);
         }
     }
-    void OnPRanim()
+    void Block()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(1))
         {
             if (!action)
                 return;
-            animator.SetBool("PR", true);
-            _state = Define.Player.Attack;
+            animator.SetBool("Block", true);
+            OnBlock();
         }
+    }
+    void OnPRanim()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            if (Time.time >= lastAttackTime + attackCooldown)
+            {
+                if (!action)
+                    return;
+                if (!isAttacking)
+                {
+                    isAttacking = true;
+                    StartCoroutine(AttackCoroutine()); 
+                }
+
+                lastAttackTime = Time.time; 
+            }
+        }
+    }
+
+    private IEnumerator AttackCoroutine()
+    {
+        if (attackStage == AttackStage.None)
+        {
+            animator.SetTrigger("Attack");
+            _state = Define.Player.Attack;
+            yield return new WaitForSeconds(0.1f); // 첫 번째 공격 시간
+            attackStage = AttackStage.Attack1;
+        }
+        else if (attackStage == AttackStage.Attack1)
+        {
+            animator.SetTrigger("Attack2");
+            yield return new WaitForSeconds(0.1f); // 두 번째 공격 시간
+            attackStage = AttackStage.Attack2;
+
+        }
+        else if (attackStage == AttackStage.Attack2)
+        {
+            animator.SetTrigger("Attack3");
+            yield return new WaitForSeconds(0.1f); // 세 번째 공격 시간
+            attackStage = AttackStage.None;
+
+        }
+
+        _state = Define.Player.Idle;
+        yield return new WaitForSeconds(0.5f);
+
+        isAttacking = false; // 공격이 끝났으므로 초기화
     }
     public void TakingDamage()
     {
-        animator.SetBool("Hit", true);
-    }
-    public void DamageanimEnd()
-    {
-        animator.SetBool("Hit", false);
+        // animator.SetTrigger("Hit");
+      //  animator.CrossFade("Hit", 0.5f);
     }
     void Attack()
     {
@@ -163,9 +226,12 @@ public class PlayerController : MonoBehaviour
 
     void OnPRanimFinish()
     {
-        animator.SetBool("PR", false);
         Attack();
         _state = Define.Player.Idle;
+    }
+    void BlockFinish()
+    {
+        animator.SetBool("Block", false);
     }
     public MonsterStat GetLocktarget()
     {
@@ -185,6 +251,7 @@ public class PlayerController : MonoBehaviour
         UpdateMouseCursor();
         Stamina();
         OnPRanim();
+        Block();
 
         var playerForward = transform.forward;
         var rayDir = playerForward * 10f;
@@ -217,9 +284,9 @@ public class PlayerController : MonoBehaviour
         //float x = Input.GetAxis("Horizontal");   // 수평 이동
         var z = Input.GetAxis("Vertical");
 
-        var ispuuch = animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
+       // var ispuuch = animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
 
-        if (z >= 0.1f && !(ispuuch))
+        if (z >= 0.1f && !(isAttacking))
         {
             if (!action)
                 return;
