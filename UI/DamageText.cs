@@ -1,41 +1,31 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
+
 
 public class DamageText : MonoBehaviour
 {
+    public TextMeshPro damageText;
+    public float moveSpeed = 1.0f;
+    public float fadeSpeed = 1.0f;
 
-    float moveSpeed;
-    float alphaSpeed;
-    float destroyTime;
-
-    TextMeshPro text;
-    Color alpha;
-    public int damage;
     private void Start()
     {
-        moveSpeed = 10.0f;
-        alphaSpeed = 2.0f;
-        destroyTime = 1.5f;
+        Destroy(gameObject, 2.0f); 
+    }
 
-        text = GetComponent<TextMeshPro>();
-        alpha = text.color;
-        text.text = damage.ToString();
-        Invoke("DestroEvent", destroyTime);
+    private void Update()
+    {
         
-    }
-    void Update()
-    {
-        transform.Translate(new Vector3(0, moveSpeed * Time.deltaTime, 0));
+        transform.Translate(Vector3.up * moveSpeed * Time.deltaTime);
 
-        alpha.a = Mathf.Lerp(alpha.a, 0, Time.deltaTime * alphaSpeed);
-        text.color = alpha;
-
-    }
-    public void DestroEvent()
-    {
-        Destroy(gameObject);
+        // Fade out the text
+    //    Color textColor = damageText.color;
+     //   textColor.a -= fadeSpeed * Time.deltaTime;
+     //   damageText.color = textColor;
     }
 }

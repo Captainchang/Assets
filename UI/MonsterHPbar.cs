@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,11 +10,15 @@ public class MonsterHPbar : Hpbar
 
     float Hp;
     public PlayerController player;
+    [SerializeField]
+    TextMeshProUGUI moncurrentHp;
 
     void Update()
     {
         var monsterhp = player.GetLocktarget();
         Hp = monsterhp.HP / (float)monsterhp.MaxHp;
+        moncurrentHp.text = monsterhp.HP.ToString();
+        moncurrentHp.color = Color.white;
         SetHpRatio(Hp);
     }
 }

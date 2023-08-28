@@ -17,25 +17,26 @@ public class Inventory : MonoBehaviour
     private void OnValidate()
     {
         slots = slotParent.GetComponentsInChildren<Slot>();
+        //slots = new Slot[35];
     }
     private void Awake()
     {
-        //slots = new Slot[35];
-      //  SlotCreate();
-       FreshSlot();
+   
+        //SlotCreate();
+        FreshSlot();
     }
-    public void SlotCreate()
+    /*public void SlotCreate()
     {
-         for (int j = 0; j < slots.Length; j++)
+        for (int j = 0; j > slots.Length; j++)
         {
             GameObject slot = Instantiate(SlotPrefab, slotParent);
             slot.name = "Slot" + (j + 1);
             slot.SetActive(true);
         }
-    }
+    }*/
     public void FreshSlot()
     {
-            int i = 0;
+        int i = 0;
         for (; i< items.Count && i < slots.Length; i++)
         {
             slots[i].item = items[i];

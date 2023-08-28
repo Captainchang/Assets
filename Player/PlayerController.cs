@@ -45,17 +45,25 @@ public class PlayerController : MonoBehaviour
     AudioClip leftfootstep;
     [SerializeField]
     AudioClip rightfootstep;
+    [SerializeField]
+    AudioClip blocksounds;
+    [SerializeField]
+    AudioClip attacksounds;
+    [SerializeField]
+    AudioClip nonattacksounds;
 
 
     [Header("이동")]
     [Space (10)]
     public float gravity = -9.18f;
 
+
     bool isjumping;
     public Vector3 velocity;
     float Jumpforce = 4.0f;
     public Vector3 move;
     bool action = true;
+    bool blockcooldown = false;
 
     enum AttackStage 
     {
@@ -78,9 +86,16 @@ public class PlayerController : MonoBehaviour
         _player = GetComponent<PlayerStat>();
         _monster =GetComponent<MonsterStat>();
 
+        PlayerStatUI.Instance.UpdateMaxHp();
+        PlayerStatUI.Instance.UpdateHp();
+        PlayerStatUI.Instance.UpdateAttack();
+
         attackStage = AttackStage.None;
         leftfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk1");
         rightfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk2");
+        attacksounds = Resources.Load<AudioClip>("Sounds/Attack/Attack");
+        blocksounds = Resources.Load<AudioClip>("Sounds/Attack/Block");
+        nonattacksounds = Resources.Load<AudioClip>("Sounds/Attack/NonAttack");
 
     }
     public void Dontmove()
@@ -123,6 +138,10 @@ public class PlayerController : MonoBehaviour
     {
         AudioSource.PlayClipAtPoint(rightfootstep, Camera.main.transform.position);
     }
+    void AttackSounds()
+    {
+        AudioSource.PlayClipAtPoint(attacksounds, Camera.main.transform.position);
+    }
     void Jump()
     {
         if (Input.GetKey(KeyCode.Space) && !isjumping)
@@ -144,11 +163,24 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            if (!action)
+            if (!action || blockcooldown)
                 return;
+
+            blockcooldown = true;
+            StartCoroutine(BlockCool());
+
             animator.SetBool("Block", true);
+
             OnBlock();
+
+
+            AudioSource.PlayClipAtPoint(blocksounds, Camera.main.transform.position);
         }
+    }
+    IEnumerator BlockCool()
+    {
+        yield return new WaitForSeconds(3f);
+        blockcooldown= false;
     }
     void OnPRanim()
     {
@@ -161,7 +193,7 @@ public class PlayerController : MonoBehaviour
                 if (!isAttacking)
                 {
                     isAttacking = true;
-                    StartCoroutine(AttackCoroutine()); 
+                    StartCoroutine(AttackCoroutine());
                 }
 
                 lastAttackTime = Time.time; 
@@ -281,40 +313,58 @@ public class PlayerController : MonoBehaviour
             Npc = null;
             talkobj.SetActive(false);
         }
-        //float x = Input.GetAxis("Horizontal");   // 수평 이동
-        var z = Input.GetAxis("Vertical");
+        var x = Input.GetAxis("Horizontal");   // 수평 이동
+        var z = Input.GetAxis("Vertical");   // 수직
 
-       // var ispuuch = animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
+        // var ispuuch = animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
 
-        if (z >= 0.1f && !(isAttacking))
+        if (z != 0 && !(isAttacking))
         {
             if (!action)
                 return;
-           _state = Define.Player.Walk;
-           _player.MoveSpeed = 4f;
+            _state = Define.Player.Walk;
+            _player.MoveSpeed = 4f;
             if (Input.GetKey(KeyCode.LeftShift) && _player.Stamina >= 10)
             {
                 _state = Define.Player.Run;
                 _player.MoveSpeed = 7f;
-                _player.Stamina -= 20 * Time.deltaTime; 
+                _player.Stamina -= 20 * Time.deltaTime;
             }
             else
             {
                 _state = Define.Player.Idle;
             }
-           animator.SetFloat("Speed", 5.0f);
+
+            if (x != 0)
+            {
+                x = 0;
+                animator.SetFloat("RightSpeed", 0f);
+            }
+            animator.SetFloat("Speed", 5.0f);
         }
-        else
+        if (x != 0 && !(isAttacking))
+        {
+            if (!action)
+                return;
+            _player.MoveSpeed = 4f;
+            if (z != 0)
+            {
+                z = 0;
+                animator.SetFloat("Speed", 0f);
+            }
+            animator.SetFloat("RightSpeed", 5.0f);
+        }
+        if (z == 0 && x == 0)
         {
             _player.MoveSpeed = 0f;
             animator.SetFloat("Speed", 0f);
+            animator.SetFloat("RightSpeed", 0f);
         }
-        move =  transform.forward * z;
 
+        Vector3 move = new Vector3(x, 0, z);
+        move = transform.TransformDirection(move);
         controller.Move(move * _player.MoveSpeed * Time.deltaTime);
-
         velocity.y += gravity * Time.deltaTime;
-
-       controller.Move(velocity* Time.deltaTime);
+        controller.Move(velocity * Time.deltaTime);
     }
 }

@@ -1,7 +1,9 @@
+using RPGCharacterAnims.Actions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Headers;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -17,42 +19,43 @@ public class MonsterController : MonoBehaviour
     [Header("플레이어 관련")]
     [Space(10)]
     [SerializeField]
-    private PlayerController player;
+    protected PlayerController player;
     [SerializeField]
-    PlayerStat playerStat;
+    protected PlayerStat playerStat;
     [SerializeField]
-    GameObject dmgtext;
+    protected GameObject dmgtext;
     [SerializeField]
-    MonsterStat monsterstat;
+    protected MonsterStat monsterstat;
     [SerializeField]
-    private GameObject locktarget;
+    protected GameObject locktarget;
     public GameObject PlayerTrans;
 
     [Space(10)]
     public int nextmove;
     public Animator animator;
     public bool isDie = false;
-    BoxCollider boxCollider;
+    protected BoxCollider boxCollider;
 
     [SerializeField]
     public Define.MonsterType type;
     [SerializeField]
-    LayerMask layer;
+    protected LayerMask layer;
     [SerializeField]
-    private float movespeed = 3.0f;
-   
+    protected float movespeed = 3.0f;
+    [SerializeField]
+    Canvas canvas;
     public Vector3 startPosition;
     
     
-    private void Awake()
+    protected void Awake()
     {
-        PlayerTrans = GameObject.FindWithTag("Player");
+        Playerfind();
         startPosition = transform.position;
         _state = Define.Monster.Idle;
         nextmove = 3;
         
     }
-    void Start()
+    protected void Start()
     {
         
         playerStat = PlayerTrans.GetComponent<PlayerStat>();
@@ -60,7 +63,11 @@ public class MonsterController : MonoBehaviour
         player = PlayerTrans.GetComponent<PlayerController>();
         animator =GetComponent<Animator>();
         boxCollider = gameObject.GetComponent<BoxCollider>();
-
+        canvas = gameObject.GetComponent<Canvas>();
+    }
+    protected void Playerfind()
+    {
+        PlayerTrans = GameObject.FindWithTag("Player");
     }
     void UpdateIdle()
     {
@@ -73,12 +80,8 @@ public class MonsterController : MonoBehaviour
         }
     }
 
-    void DamageText()
-    {
-        //GameObject damageText = Instantiate(dmgtext,canvas.transform);
-       // damageText.transform.position = transform.position;
-    }
-    void UpdateRun()
+ 
+    protected virtual void UpdateRun()
     {
         if (locktarget != null)
         {
@@ -136,25 +139,32 @@ public class MonsterController : MonoBehaviour
         PlayerController.OnBlock += Block;
         Debug.Log("Blocking");
     }
-    virtual public void Hit()
-    { 
+    void Texthit()
+    {
+        //TODO
+        GameObject damageUI = Instantiate(dmgtext,transform.position,Quaternion.identity);
+        DamageText damageText = GetComponent<DamageText>();
+        damageText.damageText.text = 2.ToString();
+
+    }
+    public virtual void Hit()
+    {
+
         if (isDie == false)
         {
             _state = Define.Monster.Hit;
-           // monsterstat = monstergameObject.GetComponent<MonsterStat>();
+         
             switch (type)
             {
-                case Define.MonsterType.Turtle :
-                    DamageText();
+                case Define.MonsterType.Turtle:
+                    
                     monsterstat.HP -= playerStat.Attack *2;
                     break;
                 case Define.MonsterType.minotaur:
-                    DamageText();
-                    monsterstat.HP -= playerStat.Attack * 1 / 2;        
-                    animator.SetBool("Hit",true);
+                
+                    monsterstat.HP -= playerStat.Attack * 1 / 2;
                     break;
                 default:
-                    DamageText();
                     monsterstat.HP -= playerStat.Attack;
                     animator.SetBool("Hit", true);
                     break;

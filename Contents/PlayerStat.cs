@@ -17,9 +17,9 @@ public class PlayerStat : Stat
     public void Start()
     {
         _level = 1;
-        _hp = 100;
-        _maxhp = 100;
-        _attack = 10;
+        _hp = 200;
+        _maxhp = 200;
+        _attack = 50;
         _defense = 5;
         _stamina = 100;
         _maxstamina= 100;

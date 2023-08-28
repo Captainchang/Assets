@@ -34,6 +34,7 @@ public class PlayerStatUI : MonoBehaviour
     private void Start()
     {
         StartStat();
+
     }
     void Initialze()
     {
@@ -52,6 +53,7 @@ public class PlayerStatUI : MonoBehaviour
         PlayerAttack.text = "Attack : "  +  playerStat.Attack.ToString();
     }
     public void UpdateHp() { PlayerCurrentHp.text = "CurrentHp :" + playerStat.HP.ToString(); }
+    public void UpdateMaxHp() { PlayerMaxHp.text = "MaxHp : " + playerStat.MaxHp.ToString(); }
     public void UpdateAttack() { PlayerAttack.text = "Attack : " + playerStat.Attack.ToString(); }
 
 }
