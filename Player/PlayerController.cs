@@ -1,3 +1,4 @@
+using Mono.Cecil;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -194,6 +195,7 @@ public class PlayerController : MonoBehaviour
                 {
                     isAttacking = true;
                     StartCoroutine(AttackCoroutine());
+                    //_player.Attack = _player.Attack * 90/100;  /버프 스킬 만들어서  사용하자 
                 }
 
                 lastAttackTime = Time.time; 
@@ -207,20 +209,23 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetTrigger("Attack");
             _state = Define.Player.Attack;
-            yield return new WaitForSeconds(0.1f); // 첫 번째 공격 시간
+           
+            yield return new WaitForSeconds(0.2f); // 첫 번째 공격 시간
             attackStage = AttackStage.Attack1;
+           
+
         }
         else if (attackStage == AttackStage.Attack1)
         {
             animator.SetTrigger("Attack2");
-            yield return new WaitForSeconds(0.1f); // 두 번째 공격 시간
+            yield return new WaitForSeconds(0.2f); // 두 번째 공격 시간
             attackStage = AttackStage.Attack2;
 
         }
         else if (attackStage == AttackStage.Attack2)
         {
             animator.SetTrigger("Attack3");
-            yield return new WaitForSeconds(0.1f); // 세 번째 공격 시간
+            yield return new WaitForSeconds(0.2f); // 세 번째 공격 시간
             attackStage = AttackStage.None;
 
         }
@@ -292,13 +297,11 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(this.transform.position + Vector3.up, rayDir, out hit, 20.0f, Monster_layer))
         {
             monsterHP.SetActive(true);
-            animator.SetBool("Combat",true);
             locktarget = hit.transform.gameObject;
         }
         else
         {
             monsterHP.SetActive(false);
-            animator.SetBool("Combat", false);
             locktarget = null;
         }
 

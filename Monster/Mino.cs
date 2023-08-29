@@ -23,6 +23,7 @@ public class Mino : MonsterController
     protected override void UpdateRun()
     {
         base.UpdateRun();
+
         //float playerdis = Vector3.Distance(transform.position, locktarget.transform.position);
         /*//미노타우루스 특수패턴 , 컨트롤러 분리 해야함 
           if (playerdis > 5)

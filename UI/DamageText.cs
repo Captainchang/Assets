@@ -10,12 +10,13 @@ using UnityEngine.UIElements;
 public class DamageText : MonoBehaviour
 {
     public TextMeshPro damageText;
-    public float moveSpeed = 1.0f;
-    public float fadeSpeed = 1.0f;
+    public float moveSpeed = 2.0f;
+    public float fadeSpeed = 2.0f;
 
     private void Start()
     {
-        Destroy(gameObject, 2.0f); 
+        //damageText.text = damageText.ToString();
+        Destroy(gameObject, 1.0f); 
     }
 
     private void Update()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,8 +11,14 @@ public class CooldownUI : MonoBehaviour
     public float currentCooldown = 5f;
     private bool isEnded = true;
 
-    private void Start()
+    public static Action skillcool;
+
+    private void Awake()
     {
+        skillcool = () =>
+        {
+            Trigger_Skill();
+        };
     }
     private void Update()
     {

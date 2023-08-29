@@ -7,6 +7,7 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using static Define;
 
@@ -139,13 +140,25 @@ public class MonsterController : MonoBehaviour
         PlayerController.OnBlock += Block;
         Debug.Log("Blocking");
     }
-    void Texthit()
+    void Texthit(int attack)
     {
         //TODO
-        GameObject damageUI = Instantiate(dmgtext,transform.position,Quaternion.identity);
-        DamageText damageText = GetComponent<DamageText>();
-        damageText.damageText.text = 2.ToString();
+        GameObject damageUI = Instantiate(dmgtext,transform.position + new Vector3(0.1f,2.5f), Quaternion.identity);
+        //GameObject damageUI = Instantiate(dmgtext,transform.position + new Vector3(1.3f,2f), Quaternion.identity);
+        Vector3 directionToPlayer = (player.transform.position - transform.position).normalized;
+        damageUI.transform.rotation = Quaternion.LookRotation(-directionToPlayer);
+   
+        DamageText damageText = damageUI.GetComponent<DamageText>();
 
+        if (damageText != null)
+        {
+            damageText.damageText.text = "" + attack;
+        }
+ 
+    }
+    void Texthit()
+    {
+        Texthit(playerStat.Attack);
     }
     public virtual void Hit()
     {
@@ -157,16 +170,16 @@ public class MonsterController : MonoBehaviour
             switch (type)
             {
                 case Define.MonsterType.Turtle:
-                    
                     monsterstat.HP -= playerStat.Attack *2;
+                    Texthit(playerStat.Attack * 2);
                     break;
                 case Define.MonsterType.minotaur:
-                
                     monsterstat.HP -= playerStat.Attack * 1 / 2;
+                    Texthit(playerStat.Attack * 1 / 2);
                     break;
                 default:
                     monsterstat.HP -= playerStat.Attack;
-                    animator.SetBool("Hit", true);
+                    Texthit();
                     break;
             }
             Debug.Log("공격! 몬스터 체력 " + monsterstat.HP);
