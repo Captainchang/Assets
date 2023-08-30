@@ -30,6 +30,8 @@ public class MonsterController : MonoBehaviour
     [SerializeField]
     protected GameObject locktarget;
     public GameObject PlayerTrans;
+    float dis;
+    bool isHit;
 
     [Space(10)]
     public int nextmove;
@@ -121,9 +123,14 @@ public class MonsterController : MonoBehaviour
     }
     public void Attack()
     {
-        playerStat.HP -= monsterstat.Attack;
+        if (isHit) // 몬스터 공격 피할수있음.
+            playerStat.HP -= monsterstat.Attack;
+
         player.TakingDamage();
+
         PlayerStatUI.Instance.UpdateHp();
+        PlayerStatUI.Instance.UpdateCurrentHpbar();
+
         Debug.Log("공격! 플레이어 체력 " + playerStat.HP);
         if(playerStat.HP <= 0)
         {
@@ -222,30 +229,26 @@ public class MonsterController : MonoBehaviour
             Invoke("Respawn", 10f);
         }
     }
-   /* private void OnCollisionEnter(Collision collision)
-    {
-       if(locktarget != null && isDie == false)
-        {
-            Attack();
-        }
-    }
-    공격 데미지 넣는 부분 */ 
+ 
     void Update()
     {
         
-        var dis = Vector3.Distance(transform.position, PlayerTrans.transform.position);
-
+        dis = Vector3.Distance(transform.position, PlayerTrans.transform.position);
         if (dis < 5)
         {
             _state = Define.Monster.Run;
             locktarget = PlayerTrans;
             animator.SetBool("Attack", false);
         }
-
-        if (dis <= 2)
+        if (dis <= 2.3)
         {
+            isHit= true;
             _state = Define.Monster.Attack;
             locktarget = PlayerTrans;
+        }
+        else
+        {
+            isHit = false;
         }
         //Debug.DrawRay(this.transform.position + Vector3.up, Vector3.forward * 10 , Color.red);
         RaycastHit hit;

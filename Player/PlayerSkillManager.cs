@@ -12,10 +12,11 @@ public class PlayerSkillManager : MonoBehaviour
 
         skills = new Skill[skillcomponent.Length];
 
-        for (int i = skillcomponent.Length - 1; i >= 0; i--)
+        for (int i = 0; i < skillcomponent.Length; i++)
         {
-           
-            skills[skillcomponent.Length -1 - i] = skillcomponent[i].GetComponent<Skill>();
+            int skillIndex = skillcomponent[i].skillNumber - 1;
+            skills[skillIndex] = skillcomponent[i];
+            //skills[i] = skillcomponent[i].GetComponent<Skill>();
         }
     }
     void UseSkill(int skillIndex)
@@ -27,7 +28,7 @@ public class PlayerSkillManager : MonoBehaviour
 
             if (skillToUse != null)
             {
-                CooldownUI.skillcool();
+                //CooldownUI.skillcool();
                 Debug.Log(skills[skillIndex]);
             }
         }

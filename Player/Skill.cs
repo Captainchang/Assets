@@ -8,4 +8,5 @@ public class Skill : MonoBehaviour
     public int damage;
     public float range;
     public float cooldown;
+    public int skillNumber; 
 }

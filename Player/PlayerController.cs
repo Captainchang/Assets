@@ -90,6 +90,7 @@ public class PlayerController : MonoBehaviour
         PlayerStatUI.Instance.UpdateMaxHp();
         PlayerStatUI.Instance.UpdateHp();
         PlayerStatUI.Instance.UpdateAttack();
+        PlayerStatUI.Instance.UpdateCurrentHpbar();
 
         attackStage = AttackStage.None;
         leftfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk1");
@@ -246,7 +247,7 @@ public class PlayerController : MonoBehaviour
         {
             var dis = (locktarget.transform.position - gameObject.transform.position).magnitude;
 
-            if (dis <= 2 )
+            if (dis <= 2.3 )
             {
                 if (monsterController == null)
                 {
