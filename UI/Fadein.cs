@@ -53,5 +53,7 @@ public class Fadein : MonoBehaviour
             yield return null;
         }
         isPlaying= false;
+
+        gameObject.SetActive(false);
     }
 }

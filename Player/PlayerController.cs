@@ -144,6 +144,7 @@ public class PlayerController : MonoBehaviour
     {
         AudioSource.PlayClipAtPoint(attacksounds, Camera.main.transform.position);
     }
+
     void Jump()
     {
         if (Input.GetKey(KeyCode.Space) && !isjumping)
@@ -247,7 +248,7 @@ public class PlayerController : MonoBehaviour
         {
             var dis = (locktarget.transform.position - gameObject.transform.position).magnitude;
 
-            if (dis <= 2.3 )
+            if (dis <= 2.6 )
             {
                 if (monsterController == null)
                 {
@@ -291,6 +292,17 @@ public class PlayerController : MonoBehaviour
         OnPRanim();
         Block();
 
+        //플레이어 이동
+        var x = Input.GetAxis("Horizontal");   // 수평 이동
+        var z = Input.GetAxis("Vertical");   // 수직
+
+        Vector3 move = new Vector3(x, 0, z);
+        move = transform.TransformDirection(move);
+        controller.Move(move * _player.MoveSpeed * Time.deltaTime);
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+
+
         var playerForward = transform.forward;
         var rayDir = playerForward * 10f;
         Debug.DrawRay(this.transform.position + Vector3.up, rayDir, Color.red);
@@ -317,10 +329,6 @@ public class PlayerController : MonoBehaviour
             Npc = null;
             talkobj.SetActive(false);
         }
-        var x = Input.GetAxis("Horizontal");   // 수평 이동
-        var z = Input.GetAxis("Vertical");   // 수직
-
-        // var ispuuch = animator.GetCurrentAnimatorStateInfo(0).IsName("Attack");
 
         if (z != 0 && !(isAttacking))
         {
@@ -334,9 +342,17 @@ public class PlayerController : MonoBehaviour
                 _player.MoveSpeed = 7f;
                 _player.Stamina -= 20 * Time.deltaTime;
             }
-            else
+
+            if (Input.GetKeyDown(KeyCode.E) && _player.Stamina >= 20)
             {
-                _state = Define.Player.Idle;
+                if (z == 0 && x == 0)
+                    return;   
+                controller.Move(move * _player.MoveSpeed * 3 * Time.deltaTime);
+
+                animator.SetTrigger("Roll");
+                _player.MoveSpeed = 30f;
+                _player.Stamina -= 20;
+
             }
 
             if (x != 0)
@@ -364,11 +380,6 @@ public class PlayerController : MonoBehaviour
             animator.SetFloat("Speed", 0f);
             animator.SetFloat("RightSpeed", 0f);
         }
-
-        Vector3 move = new Vector3(x, 0, z);
-        move = transform.TransformDirection(move);
-        controller.Move(move * _player.MoveSpeed * Time.deltaTime);
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
+ 
     }
 }

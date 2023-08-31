@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerSkillManager : MonoBehaviour
 {
     public Skill[] skills;
-
     private void Awake()
     {
         Skill[] skillcomponent = FindObjectsOfType<Skill>();
@@ -28,10 +27,14 @@ public class PlayerSkillManager : MonoBehaviour
 
             if (skillToUse != null)
             {
-                //CooldownUI.skillcool();
-                Debug.Log(skills[skillIndex]);
+                skills[skillIndex].Trigger_Skill();
+                Debug.Log(skills[skillIndex]);      
             }
         }
+    }
+    public void OnSkillButtonClicked(int skillIndex)
+    {
+        CooldownUI.skillcool(); 
     }
     private void Update()
     {

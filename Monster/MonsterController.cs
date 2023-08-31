@@ -1,4 +1,3 @@
-using RPGCharacterAnims.Actions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
@@ -181,8 +180,8 @@ public class MonsterController : MonoBehaviour
                     Texthit(playerStat.Attack * 2);
                     break;
                 case Define.MonsterType.minotaur:
-                    monsterstat.HP -= playerStat.Attack * 1 / 2;
-                    Texthit(playerStat.Attack * 1 / 2);
+                    monsterstat.HP -= playerStat.Attack * 1;
+                    Texthit(playerStat.Attack * 1);
                     break;
                 default:
                     monsterstat.HP -= playerStat.Attack;

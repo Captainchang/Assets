@@ -47,19 +47,19 @@ public class PlayerStatUI : MonoBehaviour
     public void StartStat()
     {
 
-        PlayerCurrentHp.color = Color.red;
-        PlayerMaxHp.color = Color.red;
-        PlayerAttack.color = Color.red;
+        PlayerCurrentHp.color = Color.white;
+        PlayerMaxHp.color = Color.white;
+        PlayerAttack.color = Color.white;
         HpbarCurrent.color = Color.white;
 
-        PlayerCurrentHp.text = "CurrentHp :"  + playerStat.HP.ToString();
-        PlayerMaxHp.text =  "MaxHp : " + playerStat.MaxHp.ToString();
-        PlayerAttack.text = "Attack : "  +  playerStat.Attack.ToString();
+        PlayerCurrentHp.text = ""  + playerStat.HP.ToString();
+        PlayerMaxHp.text =  "" + playerStat.MaxHp.ToString();
+        PlayerAttack.text = ""  +  playerStat.Attack.ToString();
         HpbarCurrent.text = "" + playerStat.HP.ToString();
     }
-    public void UpdateHp() { PlayerCurrentHp.text = "CurrentHp :" + playerStat.HP.ToString(); if (playerStat.HP <= 0) { playerStat.HP = 0; } }
-    public void UpdateMaxHp() { PlayerMaxHp.text = "MaxHp : " + playerStat.MaxHp.ToString(); }
-    public void UpdateAttack() { PlayerAttack.text = "Attack : " + playerStat.Attack.ToString(); }
+    public void UpdateHp() { PlayerCurrentHp.text = "현재 체력  :" + playerStat.HP.ToString(); if (playerStat.HP <= 0) { playerStat.HP = 0; } }
+    public void UpdateMaxHp() { PlayerMaxHp.text = "최대 체력 : " + playerStat.MaxHp.ToString(); }
+    public void UpdateAttack() { PlayerAttack.text = "공격력 : " + playerStat.Attack.ToString(); }
 
     public void UpdateCurrentHpbar() { HpbarCurrent.text = "" + playerStat.HP.ToString(); if (playerStat.HP <= 0) { playerStat.HP = 0; } }
 }

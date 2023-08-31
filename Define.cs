@@ -43,6 +43,7 @@ public class Define
         Slime,
         Turtle,
         minotaur,
+        Warrok,
     }
     public enum UI_GameObjects
     {

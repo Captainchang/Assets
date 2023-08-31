@@ -11,6 +11,11 @@ public class MonsterStat : Stat
     {
         switch (_monster)
         {
+            case Define.MonsterType.Warrok:
+                _hp = 500;
+                _maxhp = 500;
+                _attack = 20;
+                break;
             case Define.MonsterType.minotaur:
                 _hp = 200;
                 _maxhp= 200;
