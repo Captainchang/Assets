@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using static Define;
 
 public class MonsterHPbar : Hpbar
 {
@@ -12,12 +13,15 @@ public class MonsterHPbar : Hpbar
     public PlayerController player;
     [SerializeField]
     TextMeshProUGUI moncurrentHp;
+    [SerializeField]
+    TextMeshProUGUI monName;
 
     void Update()
     {
-        var monsterhp = player.GetLocktarget();
-        Hp = monsterhp.HP / (float)monsterhp.MaxHp;
-        moncurrentHp.text = monsterhp.HP.ToString();
+        var monster = player.GetLocktarget();
+        Hp = monster.HP / (float)monster.MaxHp;
+        moncurrentHp.text = monster.HP.ToString();
+        monName.text = monster.Name.ToString();
         moncurrentHp.color = Color.white;
         SetHpRatio(Hp);
     }

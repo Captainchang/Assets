@@ -237,11 +237,7 @@ public class PlayerController : MonoBehaviour
 
         isAttacking = false; // 공격이 끝났으므로 초기화
     }
-    public void TakingDamage()
-    {
-        // animator.SetTrigger("Hit");
-      //  animator.CrossFade("Hit", 0.5f);
-    }
+
     void Attack()
     {
         if (locktarget != null)

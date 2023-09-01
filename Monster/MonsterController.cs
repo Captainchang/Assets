@@ -125,8 +125,6 @@ public class MonsterController : MonoBehaviour
         if (isHit) // 몬스터 공격 피할수있음.
             playerStat.HP -= monsterstat.Attack;
 
-        player.TakingDamage();
-
         PlayerStatUI.Instance.UpdateHp();
         PlayerStatUI.Instance.UpdateCurrentHpbar();
 

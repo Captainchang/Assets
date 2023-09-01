@@ -57,8 +57,8 @@ public class PlayerStatUI : MonoBehaviour
         PlayerAttack.text = ""  +  playerStat.Attack.ToString();
         HpbarCurrent.text = "" + playerStat.HP.ToString();
     }
-    public void UpdateHp() { PlayerCurrentHp.text = "현재 체력  :" + playerStat.HP.ToString(); if (playerStat.HP <= 0) { playerStat.HP = 0; } }
-    public void UpdateMaxHp() { PlayerMaxHp.text = "최대 체력 : " + playerStat.MaxHp.ToString(); }
+    public void UpdateHp() { PlayerCurrentHp.text = "체력: " + playerStat.HP.ToString(); if (playerStat.HP <= 0) { playerStat.HP = 0; } }
+    public void UpdateMaxHp() { PlayerMaxHp.text = "/ " + playerStat.MaxHp.ToString(); }
     public void UpdateAttack() { PlayerAttack.text = "공격력 : " + playerStat.Attack.ToString(); }
 
     public void UpdateCurrentHpbar() { HpbarCurrent.text = "" + playerStat.HP.ToString(); if (playerStat.HP <= 0) { playerStat.HP = 0; } }

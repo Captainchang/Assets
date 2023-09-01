@@ -64,6 +64,7 @@ public class CameraMove : MonoBehaviour
     public void LockCamera()
     {
         Cursor.lockState = CursorLockMode.None;
+
         playerController.Dontmove();
 
         float mouseX = 0;
