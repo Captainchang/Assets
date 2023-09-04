@@ -19,7 +19,7 @@ public class ProgressManager : MonoBehaviour
     {
         questList.Add(10, new QuestData("마을 방문 ", new int[] { 2000, 1000 }));
         questList.Add(20, new QuestData("힘의 회복을 위해   ", new int[] { 2000, 1000}));
-        questList.Add(30, new QuestData("거북이 사냥  ", new int[] { 5000,4000}));
+        questList.Add(30, new QuestData("포탈?  ", new int[] { 5000,4000}));
     }
 
     public int GetQuestTalkIndex(int id)

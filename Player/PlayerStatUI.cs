@@ -26,7 +26,7 @@ public class PlayerStatUI : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+           // DontDestroyOnLoad(gameObject);
             Initialze();
         }
         else

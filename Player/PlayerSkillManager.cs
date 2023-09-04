@@ -5,6 +5,10 @@ using UnityEngine;
 public class PlayerSkillManager : MonoBehaviour
 {
     public Skill[] skills;
+    public Animator anim;
+
+    [SerializeField]
+    GameObject[] skilllist;
     private void Awake()
     {
         Skill[] skillcomponent = FindObjectsOfType<Skill>();
@@ -25,12 +29,33 @@ public class PlayerSkillManager : MonoBehaviour
         {
             Skill skillToUse = skills[skillIndex];
 
-            if (skillToUse != null)
+            float maxcool = skills[skillIndex].maxCooldown;
+            float currentcool = skills[skillIndex].currentCooldown;
+
+            if (currentcool >= maxcool )//skillToUse != null)
             {
                 skills[skillIndex].Trigger_Skill();
+
                 Debug.Log(skills[skillIndex]);      
+                switch(skillIndex)
+                {
+                    case 0:
+                        anim.SetTrigger("Skill1");
+                        break;
+                    case 1:
+                        anim.SetTrigger("Skill2");
+                        break;
+                }    
+            }
+            else
+            {
+                Debug.Log("스킬 쿨다운중.");
             }
         }
+    }
+    public void Skill2()
+    {
+        skilllist[1].SetActive(true);
     }
     public void OnSkillButtonClicked(int skillIndex)
     {
@@ -40,7 +65,7 @@ public class PlayerSkillManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            UseSkill(0); 
+            UseSkill(0);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
@@ -53,6 +78,11 @@ public class PlayerSkillManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             UseSkill(3);
+            skilllist[3].SetActive(true);
+        }
+        else if (Input.GetKeyDown(KeyCode.R))
+        {
+            UseSkill(8);
         }
     }
 }

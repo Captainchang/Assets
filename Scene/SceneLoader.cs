@@ -23,6 +23,7 @@ public class SceneLoader : MonoBehaviour
         startimg.SetActive(false);
         loadingimg.SetActive(true);
 
+        
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Main");
         asyncLoad.allowSceneActivation = false;
 

@@ -10,8 +10,7 @@ using static UnityEditor.Experimental.GraphView.GraphView;
 
 public class PlayerController : MonoBehaviour
 {
-    public delegate void BlockDelegate();
-    public static event BlockDelegate OnBlock;
+
 
     Define.Player _state = Define.Player.Idle;
     [SerializeField]
@@ -47,8 +46,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     AudioClip rightfootstep;
     [SerializeField]
-    AudioClip blocksounds;
-    [SerializeField]
     AudioClip attacksounds;
     [SerializeField]
     AudioClip nonattacksounds;
@@ -58,13 +55,16 @@ public class PlayerController : MonoBehaviour
     [Space (10)]
     public float gravity = -9.18f;
 
+    [Header("이펙트")]
+    [Space(10)]
+    public GameObject[] skilllist;
 
     bool isjumping;
     public Vector3 velocity;
     float Jumpforce = 4.0f;
     public Vector3 move;
     bool action = true;
-    bool blockcooldown = false;
+
 
     enum AttackStage 
     {
@@ -96,7 +96,7 @@ public class PlayerController : MonoBehaviour
         leftfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk1");
         rightfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk2");
         attacksounds = Resources.Load<AudioClip>("Sounds/Attack/Attack");
-        blocksounds = Resources.Load<AudioClip>("Sounds/Attack/Block");
+
         nonattacksounds = Resources.Load<AudioClip>("Sounds/Attack/NonAttack");
 
     }
@@ -145,6 +145,25 @@ public class PlayerController : MonoBehaviour
         AudioSource.PlayClipAtPoint(attacksounds, Camera.main.transform.position);
     }
 
+    void Skill1()
+    {
+        skilllist[0].SetActive(true);
+        Attack(4);
+        StartCoroutine(SkillEffectDeactivate(skilllist[0], 0.5f));
+    }
+    void Skill2()
+    {
+        skilllist[1].SetActive(true);
+        Attack(2);
+        StartCoroutine(SkillEffectDeactivate(skilllist[1], 0.3f));
+    }
+
+    IEnumerator SkillEffectDeactivate(GameObject effectObject, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        effectObject.SetActive(false);
+    }
     void Jump()
     {
         if (Input.GetKey(KeyCode.Space) && !isjumping)
@@ -162,30 +181,8 @@ public class PlayerController : MonoBehaviour
             animator.SetBool("Jump", false);
         }
     }
-    void Block()
-    {
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (!action || blockcooldown)
-                return;
-
-            blockcooldown = true;
-            StartCoroutine(BlockCool());
-
-            animator.SetBool("Block", true);
-
-            OnBlock();
-
-
-            AudioSource.PlayClipAtPoint(blocksounds, Camera.main.transform.position);
-        }
-    }
-    IEnumerator BlockCool()
-    {
-        yield return new WaitForSeconds(3f);
-        blockcooldown= false;
-    }
-    void OnPRanim()
+ 
+    void OnPRanim() 
     {
         if (Input.GetMouseButtonUp(0))
         {
@@ -238,7 +235,7 @@ public class PlayerController : MonoBehaviour
         isAttacking = false; // 공격이 끝났으므로 초기화
     }
 
-    void Attack()
+    void Attack(int attack)
     {
         if (locktarget != null)
         {
@@ -252,22 +249,38 @@ public class PlayerController : MonoBehaviour
                 }
                 if (monsterController != null)
                 {
-                    monsterController.Hit();
-                    monsterController = null;
+                    monsterController.Hit(attack);
                 }
             }
+                    monsterController = null;
         }
     }
+    void Attack()
+    {
+        if (locktarget != null)
+        {
+            var dis = (locktarget.transform.position - gameObject.transform.position).magnitude;
 
+            if (dis <= 2.6)
+            {
+                if (monsterController == null)
+                {
+                    monsterController = locktarget.GetComponent<MonsterController>();
+                }
+                if (monsterController != null)
+                {
+                    monsterController.Hit();
+                }
+            }
+            monsterController = null;
+        }
+    }
     void OnPRanimFinish()
     {
         Attack();
         _state = Define.Player.Idle;
     }
-    void BlockFinish()
-    {
-        animator.SetBool("Block", false);
-    }
+
     public MonsterStat GetLocktarget()
     {
         return locktarget.GetComponent<MonsterStat>();
@@ -286,7 +299,7 @@ public class PlayerController : MonoBehaviour
         UpdateMouseCursor();
         Stamina();
         OnPRanim();
-        Block();
+
 
         //플레이어 이동
         var x = Input.GetAxis("Horizontal");   // 수평 이동

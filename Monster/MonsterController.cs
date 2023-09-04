@@ -135,15 +135,6 @@ public class MonsterController : MonoBehaviour
             //플레이어 죽음 처리 .
         }
     }
-    void Block()
-    {
-        animator.SetBool("Hit", true);
-    }
-    void BlockSuccess()
-    {
-        PlayerController.OnBlock += Block;
-        Debug.Log("Blocking");
-    }
     void Texthit(int attack)
     {
         //TODO
@@ -164,8 +155,9 @@ public class MonsterController : MonoBehaviour
     {
         Texthit(playerStat.Attack);
     }
-    public virtual void Hit()
+    public virtual void Hit(int attack)
     {
+        attack = playerStat.Attack * attack;
 
         if (isDie == false)
         {
@@ -174,16 +166,41 @@ public class MonsterController : MonoBehaviour
             switch (type)
             {
                 case Define.MonsterType.Turtle:
-                    monsterstat.HP -= playerStat.Attack *2;
+                    monsterstat.HP -= attack * 2;
+                    Texthit(attack * 2);
+                    break;
+                case Define.MonsterType.minotaur:
+                    monsterstat.HP -= attack;
+                    Texthit(attack);
+                    break;
+                default:
+                    monsterstat.HP -= attack;
+                    Texthit(attack);
+                    break;
+            }
+            Debug.Log("공격! 몬스터 체력 " + monsterstat.HP);
+            UpdateDead();
+        }
+    }
+    public virtual void Hit()
+    {
+        if (isDie == false)
+        {
+            _state = Define.Monster.Hit;
+
+            switch (type)
+            {
+                case Define.MonsterType.Turtle:
+                    monsterstat.HP -= playerStat.Attack * 2;
                     Texthit(playerStat.Attack * 2);
                     break;
                 case Define.MonsterType.minotaur:
-                    monsterstat.HP -= playerStat.Attack * 1;
-                    Texthit(playerStat.Attack * 1);
+                    monsterstat.HP -= playerStat.Attack;
+                    Texthit(playerStat.Attack);
                     break;
                 default:
                     monsterstat.HP -= playerStat.Attack;
-                    Texthit();
+                    Texthit(playerStat.Attack);
                     break;
             }
             Debug.Log("공격! 몬스터 체력 " + monsterstat.HP);
@@ -227,8 +244,9 @@ public class MonsterController : MonoBehaviour
         }
     }
  
-    void Update()
+    public virtual void Update()
     {
+        
         
         dis = Vector3.Distance(transform.position, PlayerTrans.transform.position);
         if (dis < 5)
@@ -247,14 +265,13 @@ public class MonsterController : MonoBehaviour
         {
             isHit = false;
         }
-        //Debug.DrawRay(this.transform.position + Vector3.up, Vector3.forward * 10 , Color.red);
         RaycastHit hit;
         
         if (Physics.Raycast(this.transform.position +Vector3.up,Vector3.forward *10 ,out hit,20.0f,layer))
         {
             locktarget = hit.transform.gameObject;
         }
-
+        
         switch (_state)
         {
             case Define.Monster.Idle:

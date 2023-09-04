@@ -24,9 +24,9 @@ public class TalkManager : MonoBehaviour
         talkData.Add(11 + 1000, new string[] { "모험가여 , 힘을 찾는걸 도와주겠나 ? ", " 마을의 대장장이 브루트한테 다시 가봐라." });
 
         talkData.Add(20 + 2000, new string[] { "음 ..힘을 찾아 주기 위해선 ", "이 쪽지를 들고 불의 검에게 가보게나" });
-        talkData.Add(21 + 1000, new string[] { "거북이를 잡아서 나에게 바쳐라 " });
+        talkData.Add(21 + 1000, new string[] { "마을 어딘가 포탈이 숨겨져있다는데 " });
 
-        talkData.Add(30 + 1000, new string[] { "모험가 . ", " 아직인가 ?? " });
+        talkData.Add(30 + 1000, new string[] { "포탈은 찾았나 ? . ", " 12시 방향으로 가보게 " });
     }
 
     public string GetTalk(int id,int talkIndex)
