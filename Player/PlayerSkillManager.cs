@@ -6,6 +6,7 @@ public class PlayerSkillManager : MonoBehaviour
 {
     public Skill[] skills;
     public Animator anim;
+    bool skill4active;
 
     [SerializeField]
     GameObject[] skilllist;
@@ -21,6 +22,7 @@ public class PlayerSkillManager : MonoBehaviour
             skills[skillIndex] = skillcomponent[i];
             //skills[i] = skillcomponent[i].GetComponent<Skill>();
         }
+        skill4active = true;
     }
     void UseSkill(int skillIndex)
     {
@@ -45,6 +47,9 @@ public class PlayerSkillManager : MonoBehaviour
                     case 1:
                         anim.SetTrigger("Skill2");
                         break;
+                    case 2:
+                        anim.SetTrigger("Skill3");
+                        break;
                 }    
             }
             else
@@ -61,6 +66,7 @@ public class PlayerSkillManager : MonoBehaviour
     {
         CooldownUI.skillcool(); 
     }
+  
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -83,6 +89,13 @@ public class PlayerSkillManager : MonoBehaviour
         else if (Input.GetKeyDown(KeyCode.R))
         {
             UseSkill(8);
+        }
+
+        if (skill4active)
+        {
+            PlayerStat playerStat = anim.GetComponent<PlayerStat>();
+            playerStat.Attack = playerStat.Attack * 3/2;
+            skill4active = false;
         }
     }
 }

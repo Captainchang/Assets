@@ -157,6 +157,14 @@ public class PlayerController : MonoBehaviour
         Attack(2);
         StartCoroutine(SkillEffectDeactivate(skilllist[1], 0.3f));
     }
+    void Skill3()
+    {
+        skilllist[2].SetActive(true);
+        StartCoroutine(SkillEffectDeactivate(skilllist[2], 0.1f));
+        Attack(5);
+        skilllist[3].SetActive(true);
+        StartCoroutine(SkillEffectDeactivate(skilllist[3], 0.3f));
+    }
 
     IEnumerator SkillEffectDeactivate(GameObject effectObject, float delay)
     {
@@ -211,22 +219,18 @@ public class PlayerController : MonoBehaviour
            
             yield return new WaitForSeconds(0.2f); // 첫 번째 공격 시간
             attackStage = AttackStage.Attack1;
-           
-
         }
         else if (attackStage == AttackStage.Attack1)
         {
             animator.SetTrigger("Attack2");
             yield return new WaitForSeconds(0.2f); // 두 번째 공격 시간
             attackStage = AttackStage.Attack2;
-
         }
         else if (attackStage == AttackStage.Attack2)
         {
             animator.SetTrigger("Attack3");
             yield return new WaitForSeconds(0.2f); // 세 번째 공격 시간
             attackStage = AttackStage.None;
-
         }
 
         _state = Define.Player.Idle;
@@ -299,7 +303,7 @@ public class PlayerController : MonoBehaviour
         UpdateMouseCursor();
         Stamina();
         OnPRanim();
-
+        PlayerStatUI.Instance.UpdateAttack();
 
         //플레이어 이동
         var x = Input.GetAxis("Horizontal");   // 수평 이동
