@@ -131,6 +131,7 @@ public class MonsterController : MonoBehaviour
         Debug.Log("공격! 플레이어 체력 " + playerStat.HP);
         if(playerStat.HP <= 0)
         {
+            playerStat.HP = 0;
             Debug.Log("죽음 ");
             //플레이어 죽음 처리 .
         }
@@ -166,12 +167,16 @@ public class MonsterController : MonoBehaviour
             switch (type)
             {
                 case Define.MonsterType.Turtle:
-                    monsterstat.HP -= attack * 2;
+                    monsterstat.HP -= (attack * 2);
                     Texthit(attack * 2);
                     break;
                 case Define.MonsterType.minotaur:
                     monsterstat.HP -= attack;
                     Texthit(attack);
+                    break;
+                case Define.MonsterType.Warrok:
+                    monsterstat.HP -= (attack/2);
+                    Texthit(attack/2);
                     break;
                 default:
                     monsterstat.HP -= attack;
@@ -197,6 +202,10 @@ public class MonsterController : MonoBehaviour
                 case Define.MonsterType.minotaur:
                     monsterstat.HP -= playerStat.Attack;
                     Texthit(playerStat.Attack);
+                    break;
+                case Define.MonsterType.Warrok:
+                    monsterstat.HP -= playerStat.Attack /2 ;
+                    Texthit(playerStat.Attack/ 2);
                     break;
                 default:
                     monsterstat.HP -= playerStat.Attack;

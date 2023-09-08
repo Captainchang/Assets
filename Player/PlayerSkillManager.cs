@@ -1,17 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Define;
 
 public class PlayerSkillManager : MonoBehaviour
 {
     public Skill[] skills;
     public Animator anim;
     bool skill4active;
-
+    int skill4count = 1;
+    int potioncount = 3;
     [SerializeField]
     GameObject[] skilllist;
     private void Awake()
     {
+
+        if (FindObjectsOfType(GetType()).Length == 1)
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         Skill[] skillcomponent = FindObjectsOfType<Skill>();
 
         skills = new Skill[skillcomponent.Length];
@@ -22,7 +34,7 @@ public class PlayerSkillManager : MonoBehaviour
             skills[skillIndex] = skillcomponent[i];
             //skills[i] = skillcomponent[i].GetComponent<Skill>();
         }
-        skill4active = true;
+        skill4active = false;
     }
     void UseSkill(int skillIndex)
     {
@@ -67,8 +79,17 @@ public class PlayerSkillManager : MonoBehaviour
         CooldownUI.skillcool(); 
     }
   
+    IEnumerator Potion()
+    {
+        if (skilllist[2] != null)
+            skilllist[2].SetActive(true);
+
+       yield return new WaitForSeconds(1f);
+        skilllist[2].SetActive(false);
+    }
     private void Update()
     {
+        PlayerStat playerStat = anim.GetComponent<PlayerStat>();
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
             UseSkill(0);
@@ -81,21 +102,40 @@ public class PlayerSkillManager : MonoBehaviour
         {
             UseSkill(2);
         }
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        else if (Input.GetKeyDown(KeyCode.Alpha4) && skill4count > 0)
         {
             UseSkill(3);
             skilllist[3].SetActive(true);
+            skill4count -= 1;
+            skill4active = true;
         }
-        else if (Input.GetKeyDown(KeyCode.R))
+        else if (Input.GetKeyDown(KeyCode.R) && potioncount > 0)
         {
+            //potioncount를 인벤에 포션 개수
             UseSkill(8);
+            if (playerStat.HP < 200)
+            {
+                potioncount -= 1;
+                playerStat.HP += 50;
+                StartCoroutine(Potion());
+                if (playerStat.HP > 200)
+                {
+                    playerStat.HP = 200;
+                }
+                PlayerStatUI.Instance.UpdateHp();
+                PlayerStatUI.Instance.UpdateCurrentHpbar();
+            }
         }
 
         if (skill4active)
-        {
-            PlayerStat playerStat = anim.GetComponent<PlayerStat>();
-            playerStat.Attack = playerStat.Attack * 3/2;
-            skill4active = false;
+        { 
+            playerStat.Attack = playerStat.Attack * 3 / 2;
+            skill4active= false;
         }
+        else if(!skill4active)
+        {
+            playerStat.Attack = playerStat.Attack;
+        }
+       
     }
 }

@@ -48,6 +48,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     AudioClip attacksounds;
     [SerializeField]
+    AudioClip skill1sounds;
+    [SerializeField]
+    AudioClip skill2sounds;
+    [SerializeField]
+    AudioClip skill3sounds;
+    [SerializeField]
     AudioClip nonattacksounds;
 
 
@@ -78,6 +84,17 @@ public class PlayerController : MonoBehaviour
     bool isAttacking = false;
     float attackCooldown = 1.0f;
     float lastAttackTime = 0.0f;
+    private void Awake()
+    {
+        if (FindObjectsOfType(GetType()).Length == 1)
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     private void Start()
     {
         //monsterController=  GameObject.FindGameObjectWithTag("Monster").GetComponent<MonsterController>();
@@ -96,6 +113,10 @@ public class PlayerController : MonoBehaviour
         leftfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk1");
         rightfootstep = Resources.Load<AudioClip>("Sounds/Footstep/Walk2");
         attacksounds = Resources.Load<AudioClip>("Sounds/Attack/Attack");
+
+        skill1sounds = Resources.Load<AudioClip>("Sounds/SkillSound/Skill1");
+        skill2sounds = Resources.Load<AudioClip>("Sounds/SkillSound/Skill2");
+        skill3sounds = Resources.Load<AudioClip>("Sounds/SkillSound/Skill3");
 
         nonattacksounds = Resources.Load<AudioClip>("Sounds/Attack/NonAttack");
 
@@ -144,21 +165,36 @@ public class PlayerController : MonoBehaviour
     {
         AudioSource.PlayClipAtPoint(attacksounds, Camera.main.transform.position);
     }
+    void Skill1Sound()
+    {
+        AudioSource.PlayClipAtPoint(skill1sounds, Camera.main.transform.position);
+    }
+    void Skill2Sound()
+    {
+        AudioSource.PlayClipAtPoint(skill2sounds, Camera.main.transform.position);
+    }
+    void Skill3Sound()
+    {
+        AudioSource.PlayClipAtPoint(skill3sounds, Camera.main.transform.position);
+    }
 
     void Skill1()
     {
+        Skill1Sound();
         skilllist[0].SetActive(true);
         Attack(4);
         StartCoroutine(SkillEffectDeactivate(skilllist[0], 0.5f));
     }
     void Skill2()
     {
+        Skill2Sound();
         skilllist[1].SetActive(true);
         Attack(2);
         StartCoroutine(SkillEffectDeactivate(skilllist[1], 0.3f));
     }
     void Skill3()
     {
+        Skill3Sound();
         skilllist[2].SetActive(true);
         StartCoroutine(SkillEffectDeactivate(skilllist[2], 0.1f));
         Attack(5);
@@ -171,6 +207,7 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSeconds(delay);
 
         effectObject.SetActive(false);
+
     }
     void Jump()
     {
@@ -202,7 +239,7 @@ public class PlayerController : MonoBehaviour
                 {
                     isAttacking = true;
                     StartCoroutine(AttackCoroutine());
-                    //_player.Attack = _player.Attack * 90/100;  /버프 스킬 만들어서  사용하자 
+        
                 }
 
                 lastAttackTime = Time.time; 
@@ -343,7 +380,7 @@ public class PlayerController : MonoBehaviour
             talkobj.SetActive(false);
         }
 
-        if (z != 0 && !(isAttacking))
+        if (z != 0 && !isAttacking)
         {
             if (!action)
                 return;
@@ -375,7 +412,7 @@ public class PlayerController : MonoBehaviour
             }
             animator.SetFloat("Speed", 5.0f);
         }
-        if (x != 0 && !(isAttacking))
+        if (x != 0 && !isAttacking)
         {
             if (!action)
                 return;

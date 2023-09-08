@@ -7,15 +7,27 @@ using static UnityEditor.SceneView;
 
 public class Menu : MonoBehaviour
 {
+    [SerializeField]
     GameObject menu;
     bool isTabactive;
     CameraMove cameramove;
     Vector3 startposion;
 
     CameraMove.UItype _ui = CameraMove.UItype.None;
+    private void Awake()
+    {
+        if (FindObjectsOfType(GetType()).Length == 1)
+        {
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
     void Start()
     {
-        
+
         cameramove = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<CameraMove>();
         _ui = CameraMove.UItype.Play;
        // menu.SetActive(false);
