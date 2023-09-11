@@ -10,7 +10,7 @@ public class Inventory : MonoBehaviour
     [SerializeField]
     private Transform slotParent;
     [SerializeField]
-    private Slot[] slots;
+    public Slot[] slots;
     [SerializeField]
     GameObject SlotPrefab;
 
