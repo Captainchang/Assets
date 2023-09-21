@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class ItemDragHandler : MonoBehaviour, IBeginDragHandler,IDragHandler , IEndDragHandler
+public class ItemDragHandler : MonoBehaviour, IBeginDragHandler,IDragHandler , IEndDragHandler,IPointerClickHandler
 {
     private RectTransform rectTransform;
     [SerializeField]
@@ -23,7 +23,6 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler,IDragHandler , I
     private void Start()
     {
 
-        //menu.SetActive(false);
         returnpostion = new Vector3(0, 0,0);
         explanmenu = false;
         rectTransform = GetComponent<RectTransform>();
@@ -31,20 +30,22 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler,IDragHandler , I
         originParent = transform.parent;
         originPosition = transform.localPosition;
     }
-    
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        menu.SetActive(true);
+        menu.transform.position = transform.position + new Vector3(15, 10, 0);
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
        // transform.SetParent(GameObject.FindGameObjectWithTag("UI Canvas").transform); // 위치를 바꿀 준비를 위해  부모를 바꿈
         // To do  포지션을 마우스커서로.
         transform.localPosition = originPosition;
-  
     }
     public void OnDrag(PointerEventData eventData)
     {
         /*float dragSpeed = 15.0f;
-
         Vector2 justDelta = eventData.delta * dragSpeed * Time.deltaTime;
-
         rectTransform.anchoredPosition += eventData.delta;*/
     }
     public void OnEndDrag(PointerEventData eventData)
@@ -59,12 +60,14 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler,IDragHandler , I
             if (result.gameObject.CompareTag("Slot"))
             {
                 Slot slot = result.gameObject.GetComponent<Slot>();
-
                 if (slot != null && gameObject.name != slot.name)
                 {
 
                     SwapSlot(gameObject,slot);
-                    
+              
+                    menu.SetActive(true);
+                    menu.transform.position = transform.position + new Vector3(15, 10, 0);
+
                     Debug.Log("아이템을 놓은 슬롯: " + slot.name);
                     Debug.Log("집은 슬롯 " + gameObject.name);
                     Debug.Log(slot.transform.localPosition);
@@ -85,13 +88,6 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler,IDragHandler , I
     {
         if (transform.localPosition != returnpostion)
                 transform.localPosition = returnpostion;
-
-        if (Input.GetMouseButton(1))
-        {
-            Debug.Log("dd");
-            menu.SetActive(true);
-            menu.transform.position = transform.position;
-        }
     }
     void Slotreturn()
     {
@@ -111,9 +107,5 @@ public class ItemDragHandler : MonoBehaviour, IBeginDragHandler,IDragHandler , I
 
         from.transform.localPosition = new Vector3(0, 0, 0 );
         to.transform.localPosition = new Vector3(0, 0, 0 );
-        /*var temp = from.transform.parent;
-        from.transform.SetParent(to.transform.parent,false);
-        to.transform.SetParent(temp.transform.parent,false);*/
-
     }
 }

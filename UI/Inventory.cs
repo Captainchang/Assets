@@ -22,19 +22,9 @@ public class Inventory : MonoBehaviour
     }
     private void Awake()
     {
-   
-        //SlotCreate();
         FreshSlot();
     }
-    /*public void SlotCreate()
-    {
-        for (int j = 0; j > slots.Length; j++)
-        {
-            GameObject slot = Instantiate(SlotPrefab, slotParent);
-            slot.name = "Slot" + (j + 1);
-            slot.SetActive(true);
-        }
-    }*/
+   
     public void FreshSlot()
     {
         int i = 0;
