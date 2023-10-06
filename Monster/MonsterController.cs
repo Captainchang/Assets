@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Headers;
-using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -12,6 +12,9 @@ using static Define;
 
 public class MonsterController : MonoBehaviour
 {
+
+    public Item[] possibleItems;
+
     Define.Monster _state = Define.Monster.None;
     Define.MonsterType _type = Define.MonsterType.None;
     Define.Monsteraction _action = Define.Monsteraction.Move;
@@ -28,6 +31,8 @@ public class MonsterController : MonoBehaviour
     protected MonsterStat monsterstat;
     [SerializeField]
     protected GameObject locktarget;
+   
+
     public GameObject PlayerTrans;
     float dis;
     bool isHit;
@@ -47,8 +52,11 @@ public class MonsterController : MonoBehaviour
     [SerializeField]
     Canvas canvas;
     public Vector3 startPosition;
-    
-    
+
+   
+
+
+
     protected void Awake()
     {
         Playerfind();
@@ -66,6 +74,7 @@ public class MonsterController : MonoBehaviour
         animator =GetComponent<Animator>();
         boxCollider = gameObject.GetComponent<BoxCollider>();
         canvas = gameObject.GetComponent<Canvas>();
+  
     }
     protected void Playerfind()
     {

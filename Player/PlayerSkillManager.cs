@@ -113,14 +113,14 @@ public class PlayerSkillManager : MonoBehaviour
         {
             //potioncount를 인벤에 포션 개수
             UseSkill(8);
-            if (playerStat.HP < 200)
+            if (playerStat.HP < playerStat.MaxHp)
             {
                 potioncount -= 1;
                 playerStat.HP += 50;
                 StartCoroutine(Potion());
-                if (playerStat.HP > 200)
+                if (playerStat.HP > playerStat.MaxHp)
                 {
-                    playerStat.HP = 200;
+                    playerStat.HP = playerStat.MaxHp;
                 }
                 PlayerStatUI.Instance.UpdateHp();
                 PlayerStatUI.Instance.UpdateCurrentHpbar();
@@ -129,7 +129,7 @@ public class PlayerSkillManager : MonoBehaviour
 
         if (skill4active)
         { 
-            playerStat.Attack = playerStat.Attack * 3 / 2;
+            playerStat.Attack = playerStat.Attack +25;
             skill4active= false;
         }
         else if(!skill4active)

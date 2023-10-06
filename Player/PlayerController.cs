@@ -340,7 +340,10 @@ public class PlayerController : MonoBehaviour
         UpdateMouseCursor();
         Stamina();
         OnPRanim();
+        PlayerStatUI.Instance.UpdateMaxHp();
+        PlayerStatUI.Instance.UpdateHp();
         PlayerStatUI.Instance.UpdateAttack();
+        PlayerStatUI.Instance.UpdateCurrentHpbar();
 
         //플레이어 이동
         var x = Input.GetAxis("Horizontal");   // 수평 이동

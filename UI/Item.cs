@@ -6,14 +6,20 @@ using UnityEngine;
 public class Item : ScriptableObject
 {
 
+    public string Itemtype;
     public string ItemName;
     public Sprite ItemIcon;
     public int ItemCount;
+    public int ItemAttack;
+    public int ItemHp;
 
-    public Item(string itemName, Sprite itemIcon, int itemCount)
+    public Item(string itemtype, string itemName, Sprite itemIcon, int itemCount, int itemAttack,int itemHp)
     {
+        Itemtype = itemtype;
         ItemName = itemName;
         ItemIcon = itemIcon;
         ItemCount = itemCount;
+        ItemAttack= itemAttack;
+        ItemHp = itemHp;
     }
 }
